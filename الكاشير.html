@@ -186,7 +186,7 @@ const __oldDeleteRec = window.deleteRec;
 const PERIODS = {today:'اليوم',week:'أسبوعي',month:'شهري',year:'سنوي',all:'كل السجل',custom:'من تاريخ إلى تاريخ'};
 function ensureModernData(){
   if(window.__modernReady) return; window.__modernReady=true;
-  DB.settings = {...{storeName:'كاشير أوسكار',currency:'₪',companyKey:'SHOP-D52DC',managerPassword:'0000000000@@',theme:'green',forcePasswordChange:true,currentBranch:'branch-main'},...(DB.settings||{})};
+  DB.settings = {...{storeName:'كاشير أوسكار',currency:'₪',companyKey:'MOMEN-BAC72',managerPassword:'0000000000@@',theme:'green',forcePasswordChange:true,currentBranch:'branch-main'},...(DB.settings||{})};
   DB.units = Array.isArray(DB.units)?DB.units:[];
   const addUnit=(id,name,short,allowFraction,ratio,baseUnit)=>{if(!DB.units.some(u=>u.id===id||u.name===name)) DB.units.push({id,name,short,allowFraction,ratio,baseUnit});};
   addUnit('unit-piece','وحدة','وحدة','لا',1,''); addUnit('unit-carton','كرتونة','كرتونة','لا',24,'وحدة'); addUnit('unit-kg','كيلو','كغ','نعم',1,''); addUnit('unit-g','جرام','غ','نعم',0.001,'كيلو'); addUnit('unit-liter','لتر','لتر','نعم',1,''); addUnit('unit-ml','مل','مل','نعم',0.001,'لتر');
@@ -277,7 +277,7 @@ function renderBestSellers(){let map={};flatItems('sales').forEach(i=>{let k=i.p
 renderLabels = function(){byId('mainCard').innerHTML=`<div class="grid">${fieldWrap('اختيار الصنف','<select id="productId">'+optionsHTML(collection('products'),'name','id','اختر الصنف')+'</select>')}${fieldWrap('عدد الملصقات','<input id="count" type="number" value="1">')}</div><div class="tools" style="justify-content:center;margin:14px"><button class="btn purple" onclick="previewLabelsOnly()">عرض</button><button class="btn success" onclick="window.print()">طباعة</button></div><div id="labelsPreview" class="card"></div>`}
 function barcodeSVG(code){code=String(code||'000000');let bars='';let x=8;for(let ch of code){let n=ch.charCodeAt(0);let w=(n%3)+1;bars+=`<rect x="${x}" y="8" width="${w}" height="56" fill="#111"/>`;x+=w+((n%2)+1)}return `<svg width="150" height="82" viewBox="0 0 150 82" xmlns="http://www.w3.org/2000/svg"><rect width="150" height="82" fill="white"/>${bars}<text x="75" y="76" text-anchor="middle" font-size="10" font-family="monospace">${code}</text></svg>`}
 function previewLabelsOnly(){let p=collection('products').find(x=>x.id===byId('productId').value);let c=safeNum(byId('count').value)||1;if(!p)return;let code=p.barcode||p.sku||p.id;byId('labelsPreview').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,170px);gap:10px">${Array.from({length:c}).map(()=>`<div style="border:1px dashed #333;padding:8px;text-align:center;background:#fff">${barcodeSVG(code)}</div>`).join('')}</div>`}
-function renderSettings(){byId('mainCard').innerHTML=`<form id="settingsForm" class="grid">${fieldWrap('اسم المحل','<input name="storeName" value="'+(DB.settings.storeName||'')+'">')}${fieldWrap('مفتاح الشركة','<input name="companyKey" value="'+(DB.settings.companyKey||'SHOP-D52DC')+'">')}${fieldWrap('رمز العملة','<input name="currency" value="'+(DB.settings.currency||'₪')+'">')}${fieldWrap('كلمة مرور المدير','<input name="managerPassword" value="'+(DB.settings.managerPassword||'0000000000@@')+'">')}${fieldWrap('الفرع الحالي',branchSwitcherHTML())}${fieldWrap('شعار المحل رابط/بيانات','<input name="logo" value="'+(DB.settings.logo||'')+'">')}</form><div class="tools" style="justify-content:center;margin-top:14px"><button class="btn purple" onclick="saveSettings()">حفظ الإعدادات</button></div>`}
+function renderSettings(){byId('mainCard').innerHTML=`<form id="settingsForm" class="grid">${fieldWrap('اسم المحل','<input name="storeName" value="'+(DB.settings.storeName||'')+'">')}${fieldWrap('مفتاح الشركة','<input name="companyKey" value="'+(DB.settings.companyKey||'MOMEN-BAC72')+'">')}${fieldWrap('رمز العملة','<input name="currency" value="'+(DB.settings.currency||'₪')+'">')}${fieldWrap('كلمة مرور المدير','<input name="managerPassword" value="'+(DB.settings.managerPassword||'0000000000@@')+'">')}${fieldWrap('الفرع الحالي',branchSwitcherHTML())}${fieldWrap('شعار المحل رابط/بيانات','<input name="logo" value="'+(DB.settings.logo||'')+'">')}</form><div class="tools" style="justify-content:center;margin-top:14px"><button class="btn purple" onclick="saveSettings()">حفظ الإعدادات</button></div>`}
 function renderDashboard(){let s=collection('sales'),p=collection('purchases'),e=collection('expenses'),d=collection('debts');let sales=s.reduce((a,x)=>a+safeNum(x.total),0),paid=s.reduce((a,x)=>a+safeNum(x.paid),0),pur=p.reduce((a,x)=>a+safeNum(x.total),0),exp=e.reduce((a,x)=>a+safeNum(x.amount),0),deb=d.reduce((a,x)=>a+safeNum(x.remaining??x.amount),0);byId('mainCard').innerHTML=`<div class="kpis"><div class="kpi"><span>إجمالي المبيعات</span><strong>${money2(sales)}</strong></div><div class="kpi"><span>المدفوع</span><strong>${money2(paid)}</strong></div><div class="kpi"><span>المشتريات</span><strong>${money2(pur)}</strong></div><div class="kpi"><span>المصاريف</span><strong>${money2(exp)}</strong></div><div class="kpi"><span>الديون</span><strong>${money2(deb)}</strong></div><div class="kpi"><span>صافي تقديري</span><strong>${money2(sales-pur-exp)}</strong></div></div><div class="card"><h3>روابط سريعة</h3><div class="tools"><a class="btn success" href="الكاشير.html">فتح الكاشير</a><a class="btn primary" href="إضافة-صنف.html">إضافة صنف</a><a class="btn purple" href="إدارة-الحسابات.html">إدارة الحسابات</a><a class="btn ghost" href="الأكثر-مبيعا.html">الأكثر مبيعًا</a></div></div>`}
 function renderEmployees(){byId('mainCard').innerHTML=renderDataTable(getFilteredRows('employees'),['username','name','role','email','active'],true)+`<div class="card"><b>الصلاحيات:</b> عند إضافة/تعديل موظف تظهر مربعات اختيار لكل قسم.</div>`}
 const __oldOpenForm = window.openForm;
@@ -480,6 +480,307 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
 </script>
 
 
+
+
+<script id="oskar-remote-cashier-scanner">
+(function(){
+  if(window.__OSKAR_REMOTE_CASHIER_SCANNER__) return;
+  window.__OSKAR_REMOTE_CASHIER_SCANNER__ = true;
+
+  var REMOTE_PARAM = 'remoteScanner';
+  var receiverTimer = null;
+  var receiverBusy = false;
+  var phonePollTimer = null;
+  var phoneQr = null;
+  var lastPhoneScan = { code:'', at:0 };
+  var phoneLocalItems = [];
+
+  function appKey(){ try{return APP_KEY || 'supermarket_pos_ar_v1'}catch(e){return 'supermarket_pos_ar_v1'} }
+  function qs(name){ return new URLSearchParams(location.search).get(name) || ''; }
+  function isRemotePhone(){ return qs(REMOTE_PARAM)==='1' || qs('cashierRemote')==='1'; }
+  function pageFile(){ try{return decodeURIComponent(location.pathname.split('/').pop()||'')}catch(e){return location.pathname.split('/').pop()||''} }
+  function isCashierPage(){ try{ if(typeof CFG!=='undefined' && CFG.kind==='cashier') return true; }catch(e){} return /الكاشير\.html$/.test(pageFile()); }
+  function now(){ return new Date().toISOString(); }
+  function newId(prefix){ try{return uid(prefix||'id')}catch(e){return (prefix||'id')+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9)} }
+  function token(){ try{var a=new Uint8Array(18); crypto.getRandomValues(a); return Array.from(a).map(function(x){return x.toString(16).padStart(2,'0')}).join('')}catch(e){return Math.random().toString(36).slice(2)+Date.now().toString(36)} }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]}); }
+  function moneyText(n){ try{ if(typeof money2==='function') return money2(n); if(typeof money==='function') return money(n); }catch(e){} var d=getDB(); return Number(n||0).toFixed(2)+' '+((d.settings||{}).currency||'₪'); }
+  function toastMsg(msg){ try{ if(typeof toast==='function') return toast(msg); }catch(e){} alert(msg); }
+
+  function getDB(){
+    try{ if(typeof loadDB==='function'){ var d=loadDB(); try{DB=d}catch(e){} return d; } }catch(e){}
+    try{ return JSON.parse(localStorage.getItem(appKey())||'{}') || {}; }catch(e){ return {}; }
+  }
+  function setDB(d){
+    d = d || {};
+    try{ DB=d; }catch(e){}
+    try{ if(typeof saveDB==='function') saveDB(d); else localStorage.setItem(appKey(), JSON.stringify(d)); }catch(e){ try{localStorage.setItem(appKey(), JSON.stringify(d))}catch(_){} }
+    return d;
+  }
+  function arr(d,k){ d[k]=Array.isArray(d[k])?d[k]:[]; return d[k]; }
+  function root(d){
+    d.remoteCashier = d.remoteCashier && typeof d.remoteCashier==='object' ? d.remoteCashier : {};
+    d.remoteCashier.events = Array.isArray(d.remoteCashier.events) ? d.remoteCashier.events : [];
+    d.remoteCashier.disabled = d.remoteCashier.disabled && typeof d.remoteCashier.disabled==='object' ? d.remoteCashier.disabled : {};
+    return d.remoteCashier;
+  }
+  function companyKey(d){
+    d=d||getDB(); d.settings=d.settings||{};
+    var key=qs('companyKey') || d.settings.companyKey || 'MOMEN-BAC72';
+    d.settings.companyKey=key;
+    return key;
+  }
+  async function syncPull(){
+    var d=getDB();
+    companyKey(d); setDB(d);
+    if(navigator.onLine && window.FirebaseBridge && typeof window.FirebaseBridge.sync==='function'){
+      try{ d = await window.FirebaseBridge.sync(d,{companyKey:companyKey(d)}); setDB(d); }catch(e){ console.warn('Remote scanner sync failed', e); }
+    }
+    return getDB();
+  }
+  async function pushDB(d){
+    d=d||getDB(); companyKey(d); setDB(d);
+    if(navigator.onLine && window.FirebaseBridge){
+      try{
+        if(typeof window.FirebaseBridge.pushWithKey==='function') await window.FirebaseBridge.pushWithKey(companyKey(d));
+        else if(typeof window.FirebaseBridge.sync==='function'){ d=await window.FirebaseBridge.sync(d,{companyKey:companyKey(d)}); setDB(d); }
+      }catch(e){ console.warn('Remote scanner push failed', e); }
+    }
+    return getDB();
+  }
+  function currentBranchInfo(d){
+    d=d||getDB(); var settings=d.settings||{};
+    var id = localStorage.getItem('oskar_current_branch_id') || settings.currentBranchId || settings.currentBranch || 'branch-main';
+    var branch=(arr(d,'branches')||[]).find(function(b){return b.id===id || b.name===id}) || (arr(d,'branches')||[])[0] || {id:'branch-main',name:settings.storeName||'كاشير أوسكار'};
+    return {id:branch.id||id, name:branch.name||settings.storeName||'كاشير أوسكار'};
+  }
+  function activeSession(d){ return root(d).session || null; }
+  function sessionValid(d,sid,tok){
+    var s=activeSession(d);
+    return !!(s && s.active!==false && s.id===sid && s.token===tok && !root(d).disabled[sid]);
+  }
+  function createSession(change){
+    var d=getDB(), r=root(d), b=currentBranchInfo(d);
+    if(change || !r.session || r.session.active===false){
+      if(r.session && r.session.id) r.disabled[r.session.id]={disabledAt:now(), reason:'تم تغيير الرابط'};
+      r.session={id:newId('scan'),token:token(),active:true,createdAt:now(),changedAt:now(),branchId:b.id,branchName:b.name,companyKey:companyKey(d)};
+      r.lastChangeAt=now();
+      setDB(d);
+    }
+    return r.session;
+  }
+  function remoteLink(s){
+    var d=getDB();
+    var u=new URL(location.href);
+    u.search=''; u.hash='';
+    u.searchParams.set(REMOTE_PARAM,'1');
+    u.searchParams.set('session',s.id);
+    u.searchParams.set('token',s.token);
+    u.searchParams.set('companyKey',companyKey(d));
+    return u.toString();
+  }
+  function cleanupEvents(d){
+    var ev=root(d).events;
+    if(ev.length>350) root(d).events = ev.slice(ev.length-350);
+  }
+  function exactProduct(d,code,productId){
+    code=String(code||'').trim();
+    var products=arr(d,'products').filter(function(p){return !p._deleted && p.active!=='غير نشط'});
+    if(productId){ var byId=products.find(function(p){return p.id===productId}); if(byId) return byId; }
+    var low=code.toLowerCase();
+    return products.find(function(p){
+      return [p.sku,p.barcode,p.code,p.itemCode].some(function(v){ return String(v||'').trim().toLowerCase()===low; });
+    }) || null;
+  }
+  function playRemoteBeep(kind){
+    try{ if(typeof playBeep==='function' && kind!=='bad') playBeep(); }catch(e){}
+    try{
+      var C=window.AudioContext||window.webkitAudioContext; if(!C) return;
+      var ctx=new C(), osc=ctx.createOscillator(), gain=ctx.createGain();
+      osc.type='sine'; osc.frequency.value=kind==='bad'?220:880;
+      gain.gain.setValueAtTime(0.001,ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.12,ctx.currentTime+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.16);
+      osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+0.18);
+    }catch(e){}
+  }
+  function addOrIncrementProduct(product){
+    if(!product) return false;
+    try{
+      var existing = Array.isArray(cart) ? cart.find(function(i){return i.productId===product.id}) : null;
+      if(existing){ existing.qty = Number(existing.qty||0)+1; if(typeof renderCart==='function') renderCart(); }
+      else if(typeof addProductToCart==='function') addProductToCart(product.id);
+      else return false;
+      return true;
+    }catch(e){ console.warn(e); return false; }
+  }
+  async function processRemoteEvents(){
+    if(receiverBusy || !isCashierPage() || isRemotePhone()) return;
+    receiverBusy=true;
+    try{
+      var d=await syncPull(), r=root(d), s=activeSession(d);
+      if(!s || s.active===false) return;
+      var changed=false;
+      r.events.forEach(function(ev){
+        if(!ev || ev.sessionId!==s.id || ev.token!==s.token || ev.status!=='pending') return;
+        var p=exactProduct(d, ev.code, ev.productId);
+        if(!p){ ev.status='not_found'; ev.message='الصنف غير موجود'; ev.processedAt=now(); changed=true; playRemoteBeep('bad'); toastMsg('باركود غير موجود: '+ev.code); return; }
+        var ok=addOrIncrementProduct(p);
+        ev.status=ok?'added':'failed';
+        ev.productId=p.id; ev.productName=p.name; ev.processedAt=now(); ev.cashierDevice='laptop';
+        changed=true;
+        if(ok){ playRemoteBeep('ok'); toastMsg('تمت إضافة: '+(p.name||ev.code)); }
+      });
+      if(changed){ cleanupEvents(d); await pushDB(d); }
+    }finally{ receiverBusy=false; }
+  }
+  function startReceiver(){
+    if(receiverTimer || !isCashierPage() || isRemotePhone()) return;
+    receiverTimer=setInterval(processRemoteEvents,1300);
+  }
+
+  function injectButton(){
+    if(!isCashierPage() || isRemotePhone()) return;
+    var toolbar=document.querySelector('#productSearch') && document.querySelector('#productSearch').closest('.table-toolbar');
+    if(!toolbar || document.getElementById('remoteScannerBtn')) return;
+    var btn=document.createElement('button');
+    btn.id='remoteScannerBtn'; btn.type='button'; btn.className='btn ghost remote-scanner-btn';
+    btn.title='قارئ باركود بالجوال';
+    btn.innerHTML='<svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V5h4M16 5h4v4M20 15v4h-4M8 19H4v-4"/><path d="M7 8v8M10 8v8M14 8v8M17 8v8"/></svg><span>جوال</span>';
+    btn.onclick=function(){ openRemoteScannerPanel(false); };
+    toolbar.appendChild(btn);
+    startReceiver();
+  }
+
+  function modalShell(){
+    var old=document.getElementById('remoteScannerModal'); if(old) old.remove();
+    var m=document.createElement('div');
+    m.id='remoteScannerModal';
+    m.className='remote-scanner-modal-back';
+    m.innerHTML='<div class="remote-scanner-modal"><div class="smart-modal-head"><h3>قارئ باركود بالجوال</h3><button type="button" class="btn small danger" id="closeRemoteScannerModal">×</button></div><div id="remoteScannerModalBody"></div></div>';
+    document.body.appendChild(m);
+    document.getElementById('closeRemoteScannerModal').onclick=function(){m.remove()};
+    m.addEventListener('click',function(e){ if(e.target===m) m.remove(); });
+    return document.getElementById('remoteScannerModalBody');
+  }
+  function drawQR(link){
+    var box=document.getElementById('remoteQrBox'); if(!box) return;
+    box.innerHTML='<div class="muted">جاري إنشاء الباركود...</div>';
+    function fallback(){ box.innerHTML='<img alt="QR" style="width:220px;height:220px;border-radius:16px" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(link)+'">'; }
+    function render(){
+      if(window.QRCode && typeof window.QRCode.toCanvas==='function'){
+        var c=document.createElement('canvas'); c.width=220; c.height=220; box.innerHTML=''; box.appendChild(c);
+        window.QRCode.toCanvas(c, link, {width:220,margin:1}, function(err){ if(err) fallback(); });
+      }else fallback();
+    }
+    if(window.QRCode && window.QRCode.toCanvas) return render();
+    var s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js'; s.onload=render; s.onerror=fallback; document.head.appendChild(s);
+  }
+  window.openRemoteScannerPanel = async function(change){
+    var s=createSession(!!change), link=remoteLink(s), b=modalShell();
+    b.innerHTML='<div class="remote-scanner-grid"><div><div id="remoteQrBox" class="remote-qr-box"></div><div class="remote-status-pill">الرابط الحالي فعال</div></div><div><p class="muted">امسح هذا الكود من الجوال. سيفتح صفحة كاميرا فقط، وأي منتج يتم مسحه سيُضاف مباشرة إلى سلة الكاشير المفتوحة هنا.</p><label class="remote-label">الرابط</label><textarea id="remoteScannerLink" readonly>'+esc(link)+'</textarea><div class="tools" style="margin-top:10px"><button type="button" class="btn success" id="copyRemoteScannerLink">نسخ الرابط</button><button type="button" class="btn danger" id="changeRemoteScannerLink">تغيير الرابط وتعطيل القديم</button></div><div class="remote-help">عند الضغط على تغيير الرابط يتم إيقاف الرابط القديم فورًا، وأي جوال فاتحه سيظهر له أن الرابط منتهي.</div></div></div>';
+    drawQR(link);
+    document.getElementById('copyRemoteScannerLink').onclick=function(){ navigator.clipboard&&navigator.clipboard.writeText(link); toastMsg('تم نسخ رابط الجوال'); };
+    document.getElementById('changeRemoteScannerLink').onclick=function(){ openRemoteScannerPanel(true); };
+    await pushDB(getDB());
+    startReceiver();
+  };
+
+  function renderRemotePageShell(msg){
+    document.body.className='remote-phone-body';
+    document.body.innerHTML='<div class="remote-phone-page"><div class="remote-phone-head"><div><b>كاميرا الكاشير</b><span id="remotePhoneStatus">'+esc(msg||'جاري التحقق من الرابط...')+'</span></div><div class="remote-dot"></div></div><div id="remotePhoneReader" class="remote-phone-reader"></div><div class="remote-phone-note">وجه الكاميرا على باركود المنتج فقط. لا توجد صلاحية تعديل أو حذف من هذه الصفحة.</div><div class="remote-phone-added"><h4>الأصناف الممسوحة</h4><div id="remotePhoneItems"><div class="muted">لا توجد أصناف بعد</div></div></div></div>';
+  }
+  function setRemoteStatus(msg,bad){ var el=document.getElementById('remotePhoneStatus'); if(el){el.textContent=msg; el.classList.toggle('bad',!!bad);} }
+  function addPhoneItem(ev){
+    var found=phoneLocalItems.find(function(x){return x.productId===ev.productId && x.code===ev.code});
+    if(found){ found.qty=(found.qty||1)+1; found.eventIds.push(ev.id); found.status=ev.status||found.status; }
+    else phoneLocalItems.unshift({productId:ev.productId,code:ev.code,name:ev.productName||ev.code,qty:1,status:ev.status||'pending',eventIds:[ev.id]});
+    drawPhoneItems();
+  }
+  function drawPhoneItems(){
+    var box=document.getElementById('remotePhoneItems'); if(!box) return;
+    if(!phoneLocalItems.length){ box.innerHTML='<div class="muted">لا توجد أصناف بعد</div>'; return; }
+    box.innerHTML=phoneLocalItems.map(function(it){
+      var label=it.status==='added'?'تمت الإضافة':(it.status==='not_found'?'غير موجود':'قيد الإرسال');
+      var cls=it.status==='added'?'ok':(it.status==='not_found'?'bad':'wait');
+      return '<div class="remote-phone-item"><div><b>'+esc(it.name)+'</b><small>'+esc(it.code)+' · الكمية: '+esc(it.qty)+'</small></div><span class="'+cls+'">'+label+'</span></div>';
+    }).join('');
+  }
+  function applyPhoneStatuses(d){
+    var events=root(d).events;
+    phoneLocalItems.forEach(function(it){
+      it.eventIds.forEach(function(id){
+        var ev=events.find(function(e){return e.id===id});
+        if(ev && ev.status) it.status=ev.status;
+      });
+    });
+    drawPhoneItems();
+  }
+  async function handlePhoneCode(code){
+    code=String(code||'').trim(); if(!code) return;
+    var t=Date.now();
+    if(lastPhoneScan.code===code && t-lastPhoneScan.at<1500) return;
+    lastPhoneScan={code:code,at:t};
+    setRemoteStatus('تم التقاط الباركود، جاري الإرسال...');
+    var d=await syncPull(), sid=qs('session'), tok=qs('token'), r=root(d);
+    if(!sessionValid(d,sid,tok)){ setRemoteStatus('الرابط منتهي أو تم تغييره من الكاشير',true); stopPhoneScanner(); playRemoteBeep('bad'); return; }
+    var p=exactProduct(d, code, '');
+    var ev={id:newId('rse'),sessionId:sid,token:tok,code:code,productId:p?p.id:'',productName:p?p.name:'',status:p?'pending':'not_found',createdAt:now(),source:'phone-camera'};
+    r.events.push(ev); cleanupEvents(d);
+    await pushDB(d);
+    if(p){ addPhoneItem(ev); setRemoteStatus('تم إرسال المنتج إلى الكاشير: '+p.name); playRemoteBeep('ok'); }
+    else { addPhoneItem(ev); setRemoteStatus('هذا الباركود غير موجود في الأصناف',true); playRemoteBeep('bad'); }
+  }
+  function makeHtml5Scanner(elId){
+    var cfg={};
+    try{ if(window.Html5QrcodeSupportedFormats) cfg.formatsToSupport=Object.keys(window.Html5QrcodeSupportedFormats).map(function(k){return window.Html5QrcodeSupportedFormats[k]}).filter(function(v){return typeof v==='number'}); }catch(e){}
+    return new Html5Qrcode(elId,cfg);
+  }
+  async function startPhoneScanner(){
+    if(!window.Html5Qrcode){ setRemoteStatus('القارئ يحتاج تحميل مكتبة الكاميرا أول مرة ثم أعد فتح الرابط',true); return; }
+    var d=await syncPull();
+    if(!sessionValid(d, qs('session'), qs('token'))){ setRemoteStatus('الرابط منتهي أو تم تغييره من الكاشير',true); return; }
+    setRemoteStatus('الكاميرا جاهزة للمسح');
+    try{
+      phoneQr=makeHtml5Scanner('remotePhoneReader');
+      phoneQr.start({facingMode:'environment'},{fps:18,qrbox:{width:Math.min(360,Math.max(240,innerWidth-46)),height:180},aspectRatio:1.777},function(decoded){handlePhoneCode(decoded)},function(){}).catch(function(){ setRemoteStatus('تعذر فتح الكاميرا. افتح الرابط من HTTPS واسمح بالكاميرا.',true); });
+    }catch(e){ setRemoteStatus('تعذر تشغيل الكاميرا',true); }
+  }
+  function stopPhoneScanner(){ try{ phoneQr && phoneQr.stop && phoneQr.stop(); }catch(e){} }
+  async function phonePoll(){
+    if(!isRemotePhone()) return;
+    var d=await syncPull();
+    if(!sessionValid(d, qs('session'), qs('token'))){ setRemoteStatus('الرابط منتهي أو تم تغييره من الكاشير',true); stopPhoneScanner(); return; }
+    applyPhoneStatuses(d);
+  }
+  function initRemotePhone(){
+    renderRemotePageShell('جاري التحقق من الرابط...');
+    setTimeout(startPhoneScanner,180);
+    phonePollTimer=setInterval(phonePoll,1400);
+  }
+
+  var css=document.createElement('style');
+  css.id='oskar-remote-cashier-scanner-css';
+  css.textContent='.remote-scanner-btn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.remote-scanner-modal-back{position:fixed;inset:0;background:rgba(15,23,42,.66);backdrop-filter:blur(7px);z-index:900;display:flex;align-items:flex-start;justify-content:center;padding:44px 12px;overflow:auto}.remote-scanner-modal{width:min(780px,96vw);background:#fff;border-radius:26px;padding:16px;box-shadow:0 30px 80px rgba(0,0,0,.28)}.remote-scanner-grid{display:grid;grid-template-columns:250px 1fr;gap:18px;align-items:start}.remote-qr-box{width:240px;height:240px;border:1px solid #d8e8e1;border-radius:22px;background:#f8fffb;display:flex;align-items:center;justify-content:center;padding:10px}.remote-status-pill{margin-top:10px;background:#dcfce7;color:#166534;padding:8px 10px;border-radius:999px;text-align:center;font-weight:900}.remote-label{display:block;font-weight:950;margin-bottom:6px}.remote-scanner-modal textarea{width:100%;min-height:96px;direction:ltr;text-align:left;font-size:12px}.remote-help{margin-top:10px;color:#64748b;font-size:13px;font-weight:800}.remote-phone-body{margin:0!important;background:#031713!important;color:#fff!important;direction:rtl;min-height:100vh}.remote-phone-page{min-height:100vh;padding:14px;display:flex;flex-direction:column;gap:12px}.remote-phone-head{display:flex;align-items:center;justify-content:space-between;padding:14px;border:1px solid rgba(255,255,255,.14);border-radius:22px;background:linear-gradient(135deg,#064e3b,#0f9f6e)}.remote-phone-head b{display:block;font-size:20px}.remote-phone-head span{display:block;font-size:12px;color:#d7fff0;font-weight:800}.remote-phone-head span.bad{color:#fecaca}.remote-dot{width:13px;height:13px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 7px rgba(34,197,94,.16)}.remote-phone-reader{height:330px;max-height:48vh;border:3px solid #22c55e;border-radius:24px;overflow:hidden;background:#000}.remote-phone-reader video{object-fit:cover!important}.remote-phone-note{font-weight:900;color:#b7f7dc;text-align:center}.remote-phone-added{background:#fff;color:#10251f;border-radius:24px;padding:14px;box-shadow:0 18px 50px rgba(0,0,0,.25)}.remote-phone-added h4{margin:0 0 10px;font-size:17px}.remote-phone-item{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #d8e8e1;border-radius:18px;padding:10px;margin-bottom:8px}.remote-phone-item b{display:block}.remote-phone-item small{display:block;color:#64748b;font-weight:800}.remote-phone-item span{border-radius:999px;padding:5px 9px;font-weight:950;font-size:11px;white-space:nowrap}.remote-phone-item span.ok{background:#dcfce7;color:#166534}.remote-phone-item span.bad{background:#fee2e2;color:#991b1b}.remote-phone-item span.wait{background:#e0f2fe;color:#075985}@media(max-width:680px){.remote-scanner-grid{grid-template-columns:1fr}.remote-qr-box{margin:auto}.remote-phone-reader{height:300px}}';
+  document.head.appendChild(css);
+
+  if(isRemotePhone()){
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initRemotePhone);
+    else initRemotePhone();
+    return;
+  }
+
+  var oldRenderCashier = window.renderCashier;
+  if(typeof oldRenderCashier==='function' && !oldRenderCashier.__remoteWrapped){
+    var wrapped=function(){ var r=oldRenderCashier.apply(this,arguments); setTimeout(injectButton,0); setTimeout(startReceiver,50); return r; };
+    wrapped.__remoteWrapped=true;
+    window.renderCashier=wrapped;
+    try{ renderCashier=window.renderCashier; }catch(e){}
+  }
+  document.addEventListener('DOMContentLoaded',function(){ setTimeout(injectButton,220); setTimeout(startReceiver,260); });
+  if(document.readyState!=='loading'){ setTimeout(injectButton,220); setTimeout(startReceiver,260); }
+})();
+</script>
 
 <script id="oskar-final-focus-search-guard">
 (function(){
