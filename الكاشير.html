@@ -494,6 +494,9 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
   var phoneQr = null;
   var lastPhoneScan = { code:'', at:0 };
   var phoneLocalItems = [];
+  var phoneDBCache = null;
+  var manualSearchTimer = null;
+  var syncVisualMuteDepth = 0;
 
   function appKey(){ try{return APP_KEY || 'supermarket_pos_ar_v1'}catch(e){return 'supermarket_pos_ar_v1'} }
   function qs(name){ return new URLSearchParams(location.search).get(name) || ''; }
@@ -504,18 +507,27 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
   function newId(prefix){ try{return uid(prefix||'id')}catch(e){return (prefix||'id')+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9)} }
   function token(){ try{var a=new Uint8Array(18); crypto.getRandomValues(a); return Array.from(a).map(function(x){return x.toString(16).padStart(2,'0')}).join('')}catch(e){return Math.random().toString(36).slice(2)+Date.now().toString(36)} }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]}); }
-  function moneyText(n){ try{ if(typeof money2==='function') return money2(n); if(typeof money==='function') return money(n); }catch(e){} var d=getDB(); return Number(n||0).toFixed(2)+' '+((d.settings||{}).currency||'₪'); }
-  function toastMsg(msg){ try{ if(typeof toast==='function') return toast(msg); }catch(e){} alert(msg); }
+  function toastMsg(msg){ try{ if(typeof toast==='function') return toast(msg); }catch(e){} }
 
+  function beginSilentSync(){
+    syncVisualMuteDepth++;
+    document.documentElement.classList.add('remote-silent-sync');
+    try{ document.querySelectorAll('.syncing').forEach(function(el){ el.classList.remove('syncing'); }); }catch(e){}
+  }
+  function endSilentSync(){
+    syncVisualMuteDepth=Math.max(0,syncVisualMuteDepth-1);
+    if(!syncVisualMuteDepth) document.documentElement.classList.remove('remote-silent-sync');
+  }
+  function silentSetDB(d){
+    d=d||{};
+    try{ DB=d; }catch(e){}
+    try{ localStorage.setItem(appKey(), JSON.stringify(d)); }catch(e){}
+    try{ var st=document.getElementById('syncState'); if(st){ st.textContent=navigator.onLine?'متصل':'بدون نت'; st.classList.toggle('offline',!navigator.onLine); } }catch(e){}
+    return d;
+  }
   function getDB(){
     try{ if(typeof loadDB==='function'){ var d=loadDB(); try{DB=d}catch(e){} return d; } }catch(e){}
     try{ return JSON.parse(localStorage.getItem(appKey())||'{}') || {}; }catch(e){ return {}; }
-  }
-  function setDB(d){
-    d = d || {};
-    try{ DB=d; }catch(e){}
-    try{ if(typeof saveDB==='function') saveDB(d); else localStorage.setItem(appKey(), JSON.stringify(d)); }catch(e){ try{localStorage.setItem(appKey(), JSON.stringify(d))}catch(_){} }
-    return d;
   }
   function arr(d,k){ d[k]=Array.isArray(d[k])?d[k]:[]; return d[k]; }
   function root(d){
@@ -531,20 +543,25 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
     return key;
   }
   async function syncPull(){
-    var d=getDB();
-    companyKey(d); setDB(d);
+    var d=getDB(); companyKey(d); silentSetDB(d);
     if(navigator.onLine && window.FirebaseBridge && typeof window.FirebaseBridge.sync==='function'){
-      try{ d = await window.FirebaseBridge.sync(d,{companyKey:companyKey(d)}); setDB(d); }catch(e){ console.warn('Remote scanner sync failed', e); }
+      beginSilentSync();
+      try{ d = await window.FirebaseBridge.sync(d,{companyKey:companyKey(d), silent:true, background:true}); silentSetDB(d); }
+      catch(e){ console.warn('Remote scanner silent sync failed', e); }
+      finally{ endSilentSync(); }
     }
-    return getDB();
+    d=getDB(); phoneDBCache=d;
+    return d;
   }
   async function pushDB(d){
-    d=d||getDB(); companyKey(d); setDB(d);
+    d=d||getDB(); companyKey(d); silentSetDB(d);
     if(navigator.onLine && window.FirebaseBridge){
+      beginSilentSync();
       try{
-        if(typeof window.FirebaseBridge.pushWithKey==='function') await window.FirebaseBridge.pushWithKey(companyKey(d));
-        else if(typeof window.FirebaseBridge.sync==='function'){ d=await window.FirebaseBridge.sync(d,{companyKey:companyKey(d)}); setDB(d); }
-      }catch(e){ console.warn('Remote scanner push failed', e); }
+        if(typeof window.FirebaseBridge.pushWithKey==='function') await window.FirebaseBridge.pushWithKey(companyKey(d), {silent:true, background:true});
+        else if(typeof window.FirebaseBridge.sync==='function'){ d=await window.FirebaseBridge.sync(d,{companyKey:companyKey(d), silent:true, background:true}); silentSetDB(d); }
+      }catch(e){ console.warn('Remote scanner silent push failed', e); }
+      finally{ endSilentSync(); }
     }
     return getDB();
   }
@@ -565,7 +582,7 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
       if(r.session && r.session.id) r.disabled[r.session.id]={disabledAt:now(), reason:'تم تغيير الرابط'};
       r.session={id:newId('scan'),token:token(),active:true,createdAt:now(),changedAt:now(),branchId:b.id,branchName:b.name,companyKey:companyKey(d)};
       r.lastChangeAt=now();
-      setDB(d);
+      silentSetDB(d);
     }
     return r.session;
   }
@@ -583,15 +600,28 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
     var ev=root(d).events;
     if(ev.length>350) root(d).events = ev.slice(ev.length-350);
   }
+  function activeProducts(d){
+    return arr(d,'products').filter(function(p){return !p._deleted && p.active!=='غير نشط'});
+  }
   function exactProduct(d,code,productId){
     code=String(code||'').trim();
-    var products=arr(d,'products').filter(function(p){return !p._deleted && p.active!=='غير نشط'});
+    var products=activeProducts(d);
     if(productId){ var byId=products.find(function(p){return p.id===productId}); if(byId) return byId; }
     var low=code.toLowerCase();
     return products.find(function(p){
       return [p.sku,p.barcode,p.code,p.itemCode].some(function(v){ return String(v||'').trim().toLowerCase()===low; });
     }) || null;
   }
+  function findProducts(d,q){
+    q=String(q||'').trim().toLowerCase();
+    var words=q.split(/\s+/).filter(Boolean);
+    return activeProducts(d).filter(function(p){
+      var text=[p.name,p.sku,p.barcode,p.code,p.itemCode,p.group,p.brand].join(' ').toLowerCase();
+      return !words.length || words.every(function(w){return text.indexOf(w)>-1});
+    }).slice(0,24);
+  }
+  function productCode(p){ return String((p&&p.barcode)||(p&&p.sku)||(p&&p.code)||(p&&p.itemCode)||(p&&p.id)||'').trim(); }
+  function productPrice(p){ var v=Number((p&&p.salePrice)||(p&&p.price)||0); var cur=((getDB().settings||{}).currency||'₪'); return v.toFixed(2)+' '+cur; }
   function playRemoteBeep(kind){
     try{ if(typeof playBeep==='function' && kind!=='bad') playBeep(); }catch(e){}
     try{
@@ -620,23 +650,26 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
     try{
       var d=await syncPull(), r=root(d), s=activeSession(d);
       if(!s || s.active===false) return;
-      var changed=false;
+      var changed=false, addedCount=0, missingCount=0;
       r.events.forEach(function(ev){
         if(!ev || ev.sessionId!==s.id || ev.token!==s.token || ev.status!=='pending') return;
         var p=exactProduct(d, ev.code, ev.productId);
-        if(!p){ ev.status='not_found'; ev.message='الصنف غير موجود'; ev.processedAt=now(); changed=true; playRemoteBeep('bad'); toastMsg('باركود غير موجود: '+ev.code); return; }
+        if(!p){ ev.status='not_found'; ev.message='الصنف غير موجود'; ev.processedAt=now(); changed=true; missingCount++; return; }
         var ok=addOrIncrementProduct(p);
         ev.status=ok?'added':'failed';
         ev.productId=p.id; ev.productName=p.name; ev.processedAt=now(); ev.cashierDevice='laptop';
         changed=true;
-        if(ok){ playRemoteBeep('ok'); toastMsg('تمت إضافة: '+(p.name||ev.code)); }
+        if(ok) addedCount++;
       });
+      if(addedCount) playRemoteBeep('ok');
+      if(missingCount && !addedCount) playRemoteBeep('bad');
       if(changed){ cleanupEvents(d); await pushDB(d); }
     }finally{ receiverBusy=false; }
   }
   function startReceiver(){
     if(receiverTimer || !isCashierPage() || isRemotePhone()) return;
-    receiverTimer=setInterval(processRemoteEvents,1300);
+    processRemoteEvents();
+    receiverTimer=setInterval(processRemoteEvents,550);
   }
 
   function injectButton(){
@@ -678,7 +711,7 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
   }
   window.openRemoteScannerPanel = async function(change){
     var s=createSession(!!change), link=remoteLink(s), b=modalShell();
-    b.innerHTML='<div class="remote-scanner-grid"><div><div id="remoteQrBox" class="remote-qr-box"></div><div class="remote-status-pill">الرابط الحالي فعال</div></div><div><p class="muted">امسح هذا الكود من الجوال. سيفتح صفحة كاميرا فقط، وأي منتج يتم مسحه سيُضاف مباشرة إلى سلة الكاشير المفتوحة هنا.</p><label class="remote-label">الرابط</label><textarea id="remoteScannerLink" readonly>'+esc(link)+'</textarea><div class="tools" style="margin-top:10px"><button type="button" class="btn success" id="copyRemoteScannerLink">نسخ الرابط</button><button type="button" class="btn danger" id="changeRemoteScannerLink">تغيير الرابط وتعطيل القديم</button></div><div class="remote-help">عند الضغط على تغيير الرابط يتم إيقاف الرابط القديم فورًا، وأي جوال فاتحه سيظهر له أن الرابط منتهي.</div></div></div>';
+    b.innerHTML='<div class="remote-scanner-grid"><div><div id="remoteQrBox" class="remote-qr-box"></div><div class="remote-status-pill">الرابط الحالي فعال</div></div><div><p class="muted">امسح هذا الكود من الجوال. يفتح كاميرا الكاشير فقط، ومعها بحث يدوي عن الصنف. أي اختيار أو مسح من الجوال يُضاف مباشرة إلى السلة هنا بدون تحريك واجهة الكاشير.</p><label class="remote-label">الرابط</label><textarea id="remoteScannerLink" readonly>'+esc(link)+'</textarea><div class="tools" style="margin-top:10px"><button type="button" class="btn success" id="copyRemoteScannerLink">نسخ الرابط</button><button type="button" class="btn danger" id="changeRemoteScannerLink">تغيير الرابط وتعطيل القديم</button></div><div class="remote-help">تغيير الرابط يعطل الرابط القديم فورًا، وأي جوال فاتحه سيظهر له أن الرابط منتهي.</div></div></div>';
     drawQR(link);
     document.getElementById('copyRemoteScannerLink').onclick=function(){ navigator.clipboard&&navigator.clipboard.writeText(link); toastMsg('تم نسخ رابط الجوال'); };
     document.getElementById('changeRemoteScannerLink').onclick=function(){ openRemoteScannerPanel(true); };
@@ -688,48 +721,95 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
 
   function renderRemotePageShell(msg){
     document.body.className='remote-phone-body';
-    document.body.innerHTML='<div class="remote-phone-page"><div class="remote-phone-head"><div><b>كاميرا الكاشير</b><span id="remotePhoneStatus">'+esc(msg||'جاري التحقق من الرابط...')+'</span></div><div class="remote-dot"></div></div><div id="remotePhoneReader" class="remote-phone-reader"></div><div class="remote-phone-note">وجه الكاميرا على باركود المنتج فقط. لا توجد صلاحية تعديل أو حذف من هذه الصفحة.</div><div class="remote-phone-added"><h4>الأصناف الممسوحة</h4><div id="remotePhoneItems"><div class="muted">لا توجد أصناف بعد</div></div></div></div>';
+    document.body.innerHTML='<div class="remote-phone-page"><div class="remote-phone-head"><div><b>كاميرا الكاشير</b><span id="remotePhoneStatus">'+esc(msg||'جاري التحقق من الرابط...')+'</span></div><div class="remote-dot"></div></div><div id="remotePhoneReader" class="remote-phone-reader"></div><div class="remote-phone-note">وجه الكاميرا على باركود المنتج، أو ابحث يدويًا من قاعدة الأصناف بالأسفل. لا توجد صلاحية تعديل أو حذف من هذه الصفحة.</div><div class="remote-manual-box"><label>إدخال يدوي / بحث عن الصنف</label><input id="remoteManualSearch" autocomplete="off" placeholder="اكتب اسم الصنف أو الباركود أو SKU"><div id="remoteManualResults" class="remote-manual-results"><div class="muted">اكتب للبحث في قاعدة البيانات</div></div></div><div class="remote-phone-added"><h4>الأصناف الممسوحة أو المختارة</h4><div id="remotePhoneItems"><div class="muted">لا توجد أصناف بعد</div></div></div></div>';
   }
   function setRemoteStatus(msg,bad){ var el=document.getElementById('remotePhoneStatus'); if(el){el.textContent=msg; el.classList.toggle('bad',!!bad);} }
+  function eventKey(ev){ return (ev.productId||'')+'|'+(ev.code||''); }
   function addPhoneItem(ev){
-    var found=phoneLocalItems.find(function(x){return x.productId===ev.productId && x.code===ev.code});
+    var key=eventKey(ev);
+    var found=phoneLocalItems.find(function(x){return x.key===key});
     if(found){ found.qty=(found.qty||1)+1; found.eventIds.push(ev.id); found.status=ev.status||found.status; }
-    else phoneLocalItems.unshift({productId:ev.productId,code:ev.code,name:ev.productName||ev.code,qty:1,status:ev.status||'pending',eventIds:[ev.id]});
+    else phoneLocalItems.unshift({key:key,productId:ev.productId,code:ev.code,name:ev.productName||ev.code,qty:1,status:ev.status||'pending',eventIds:[ev.id]});
     drawPhoneItems();
   }
   function drawPhoneItems(){
     var box=document.getElementById('remotePhoneItems'); if(!box) return;
     if(!phoneLocalItems.length){ box.innerHTML='<div class="muted">لا توجد أصناف بعد</div>'; return; }
     box.innerHTML=phoneLocalItems.map(function(it){
-      var label=it.status==='added'?'تمت الإضافة':(it.status==='not_found'?'غير موجود':'قيد الإرسال');
-      var cls=it.status==='added'?'ok':(it.status==='not_found'?'bad':'wait');
-      return '<div class="remote-phone-item"><div><b>'+esc(it.name)+'</b><small>'+esc(it.code)+' · الكمية: '+esc(it.qty)+'</small></div><span class="'+cls+'">'+label+'</span></div>';
+      var label=it.status==='added'?'تمت الإضافة':(it.status==='not_found'?'غير موجود':(it.status==='failed'?'فشل':'قيد الإرسال'));
+      var cls=it.status==='added'?'ok':(it.status==='not_found'||it.status==='failed'?'bad':'wait');
+      return '<div class="remote-phone-item"><div><b>'+esc(it.name)+'</b><small>'+esc(it.code||it.productId)+' · الكمية: '+esc(it.qty)+'</small></div><span class="'+cls+'">'+label+'</span></div>';
     }).join('');
   }
   function applyPhoneStatuses(d){
     var events=root(d).events;
     phoneLocalItems.forEach(function(it){
+      var best=it.status;
       it.eventIds.forEach(function(id){
         var ev=events.find(function(e){return e.id===id});
-        if(ev && ev.status) it.status=ev.status;
+        if(ev && ev.status) best=ev.status;
       });
+      it.status=best;
     });
     drawPhoneItems();
+  }
+  function drawManualResults(q,d){
+    var box=document.getElementById('remoteManualResults'); if(!box) return;
+    d=d||phoneDBCache||getDB();
+    q=String(q||'').trim();
+    if(!q){ box.innerHTML='<div class="muted">اكتب للبحث في قاعدة البيانات</div>'; return; }
+    var rows=findProducts(d,q);
+    if(!rows.length){ box.innerHTML='<div class="muted">لا يوجد صنف مطابق</div>'; return; }
+    box.innerHTML=rows.map(function(p){
+      var code=productCode(p);
+      return '<button type="button" class="remote-manual-item" data-product-id="'+esc(p.id)+'"><b>'+esc(p.name||'صنف')+'</b><small>'+esc(code||'بدون باركود')+' · '+esc(productPrice(p))+'</small></button>';
+    }).join('');
+    box.querySelectorAll('.remote-manual-item').forEach(function(btn){
+      btn.onclick=function(){ sendManualProduct(btn.getAttribute('data-product-id')); };
+    });
+  }
+  function setupManualSearch(){
+    var input=document.getElementById('remoteManualSearch'); if(!input) return;
+    input.addEventListener('input',function(){
+      clearTimeout(manualSearchTimer);
+      var q=input.value;
+      manualSearchTimer=setTimeout(async function(){
+        if(!phoneDBCache) phoneDBCache=await syncPull();
+        drawManualResults(q, phoneDBCache);
+      },120);
+    });
+    input.addEventListener('focus',async function(){ if(!phoneDBCache) phoneDBCache=await syncPull(); drawManualResults(input.value, phoneDBCache); });
+  }
+  async function sendPhoneEvent(product, code, source){
+    var d=await syncPull(), sid=qs('session'), tok=qs('token'), r=root(d);
+    if(!sessionValid(d,sid,tok)){ setRemoteStatus('الرابط منتهي أو تم تغييره من الكاشير',true); stopPhoneScanner(); playRemoteBeep('bad'); return; }
+    product=product || exactProduct(d, code, '');
+    var ev={id:newId('rse'),sessionId:sid,token:tok,code:code||productCode(product),productId:product?product.id:'',productName:product?product.name:'',status:product?'pending':'not_found',createdAt:now(),source:source||'phone-camera'};
+    r.events.push(ev); cleanupEvents(d);
+    await pushDB(d);
+    addPhoneItem(ev);
+    if(product){ setRemoteStatus('تم إرسال المنتج إلى الكاشير: '+product.name); playRemoteBeep('ok'); }
+    else { setRemoteStatus('هذا الصنف غير موجود في قاعدة البيانات',true); playRemoteBeep('bad'); }
+  }
+  async function sendManualProduct(productId){
+    var d=phoneDBCache || await syncPull();
+    var p=exactProduct(d,'',productId);
+    if(!p){ setRemoteStatus('الصنف غير موجود أو لم تتم مزامنة الأصناف بعد',true); playRemoteBeep('bad'); return; }
+    var input=document.getElementById('remoteManualSearch');
+    if(input) input.value='';
+    drawManualResults('',d);
+    setRemoteStatus('تم اختيار الصنف، جاري الإرسال...');
+    await sendPhoneEvent(p, productCode(p), 'phone-manual');
   }
   async function handlePhoneCode(code){
     code=String(code||'').trim(); if(!code) return;
     var t=Date.now();
-    if(lastPhoneScan.code===code && t-lastPhoneScan.at<1500) return;
+    if(lastPhoneScan.code===code && t-lastPhoneScan.at<1200) return;
     lastPhoneScan={code:code,at:t};
     setRemoteStatus('تم التقاط الباركود، جاري الإرسال...');
-    var d=await syncPull(), sid=qs('session'), tok=qs('token'), r=root(d);
-    if(!sessionValid(d,sid,tok)){ setRemoteStatus('الرابط منتهي أو تم تغييره من الكاشير',true); stopPhoneScanner(); playRemoteBeep('bad'); return; }
+    var d=await syncPull();
     var p=exactProduct(d, code, '');
-    var ev={id:newId('rse'),sessionId:sid,token:tok,code:code,productId:p?p.id:'',productName:p?p.name:'',status:p?'pending':'not_found',createdAt:now(),source:'phone-camera'};
-    r.events.push(ev); cleanupEvents(d);
-    await pushDB(d);
-    if(p){ addPhoneItem(ev); setRemoteStatus('تم إرسال المنتج إلى الكاشير: '+p.name); playRemoteBeep('ok'); }
-    else { addPhoneItem(ev); setRemoteStatus('هذا الباركود غير موجود في الأصناف',true); playRemoteBeep('bad'); }
+    await sendPhoneEvent(p, code, 'phone-camera');
   }
   function makeHtml5Scanner(elId){
     var cfg={};
@@ -737,14 +817,14 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
     return new Html5Qrcode(elId,cfg);
   }
   async function startPhoneScanner(){
-    if(!window.Html5Qrcode){ setRemoteStatus('القارئ يحتاج تحميل مكتبة الكاميرا أول مرة ثم أعد فتح الرابط',true); return; }
+    if(!window.Html5Qrcode){ setRemoteStatus('القارئ يحتاج تحميل مكتبة الكاميرا أول مرة، ويمكنك استخدام البحث اليدوي بالأسفل',true); return; }
     var d=await syncPull();
     if(!sessionValid(d, qs('session'), qs('token'))){ setRemoteStatus('الرابط منتهي أو تم تغييره من الكاشير',true); return; }
     setRemoteStatus('الكاميرا جاهزة للمسح');
     try{
       phoneQr=makeHtml5Scanner('remotePhoneReader');
-      phoneQr.start({facingMode:'environment'},{fps:18,qrbox:{width:Math.min(360,Math.max(240,innerWidth-46)),height:180},aspectRatio:1.777},function(decoded){handlePhoneCode(decoded)},function(){}).catch(function(){ setRemoteStatus('تعذر فتح الكاميرا. افتح الرابط من HTTPS واسمح بالكاميرا.',true); });
-    }catch(e){ setRemoteStatus('تعذر تشغيل الكاميرا',true); }
+      phoneQr.start({facingMode:'environment'},{fps:18,qrbox:{width:Math.min(360,Math.max(240,innerWidth-46)),height:180},aspectRatio:1.777},function(decoded){handlePhoneCode(decoded)},function(){}).catch(function(){ setRemoteStatus('تعذر فتح الكاميرا. افتح الرابط من HTTPS واسمح بالكاميرا، أو استخدم البحث اليدوي.',true); });
+    }catch(e){ setRemoteStatus('تعذر تشغيل الكاميرا. استخدم البحث اليدوي بالأسفل.',true); }
   }
   function stopPhoneScanner(){ try{ phoneQr && phoneQr.stop && phoneQr.stop(); }catch(e){} }
   async function phonePoll(){
@@ -752,16 +832,18 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
     var d=await syncPull();
     if(!sessionValid(d, qs('session'), qs('token'))){ setRemoteStatus('الرابط منتهي أو تم تغييره من الكاشير',true); stopPhoneScanner(); return; }
     applyPhoneStatuses(d);
+    if(document.getElementById('remoteManualSearch')) drawManualResults(document.getElementById('remoteManualSearch').value, d);
   }
   function initRemotePhone(){
     renderRemotePageShell('جاري التحقق من الرابط...');
+    setupManualSearch();
     setTimeout(startPhoneScanner,180);
     phonePollTimer=setInterval(phonePoll,1400);
   }
 
   var css=document.createElement('style');
   css.id='oskar-remote-cashier-scanner-css';
-  css.textContent='.remote-scanner-btn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.remote-scanner-modal-back{position:fixed;inset:0;background:rgba(15,23,42,.66);backdrop-filter:blur(7px);z-index:900;display:flex;align-items:flex-start;justify-content:center;padding:44px 12px;overflow:auto}.remote-scanner-modal{width:min(780px,96vw);background:#fff;border-radius:26px;padding:16px;box-shadow:0 30px 80px rgba(0,0,0,.28)}.remote-scanner-grid{display:grid;grid-template-columns:250px 1fr;gap:18px;align-items:start}.remote-qr-box{width:240px;height:240px;border:1px solid #d8e8e1;border-radius:22px;background:#f8fffb;display:flex;align-items:center;justify-content:center;padding:10px}.remote-status-pill{margin-top:10px;background:#dcfce7;color:#166534;padding:8px 10px;border-radius:999px;text-align:center;font-weight:900}.remote-label{display:block;font-weight:950;margin-bottom:6px}.remote-scanner-modal textarea{width:100%;min-height:96px;direction:ltr;text-align:left;font-size:12px}.remote-help{margin-top:10px;color:#64748b;font-size:13px;font-weight:800}.remote-phone-body{margin:0!important;background:#031713!important;color:#fff!important;direction:rtl;min-height:100vh}.remote-phone-page{min-height:100vh;padding:14px;display:flex;flex-direction:column;gap:12px}.remote-phone-head{display:flex;align-items:center;justify-content:space-between;padding:14px;border:1px solid rgba(255,255,255,.14);border-radius:22px;background:linear-gradient(135deg,#064e3b,#0f9f6e)}.remote-phone-head b{display:block;font-size:20px}.remote-phone-head span{display:block;font-size:12px;color:#d7fff0;font-weight:800}.remote-phone-head span.bad{color:#fecaca}.remote-dot{width:13px;height:13px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 7px rgba(34,197,94,.16)}.remote-phone-reader{height:330px;max-height:48vh;border:3px solid #22c55e;border-radius:24px;overflow:hidden;background:#000}.remote-phone-reader video{object-fit:cover!important}.remote-phone-note{font-weight:900;color:#b7f7dc;text-align:center}.remote-phone-added{background:#fff;color:#10251f;border-radius:24px;padding:14px;box-shadow:0 18px 50px rgba(0,0,0,.25)}.remote-phone-added h4{margin:0 0 10px;font-size:17px}.remote-phone-item{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #d8e8e1;border-radius:18px;padding:10px;margin-bottom:8px}.remote-phone-item b{display:block}.remote-phone-item small{display:block;color:#64748b;font-weight:800}.remote-phone-item span{border-radius:999px;padding:5px 9px;font-weight:950;font-size:11px;white-space:nowrap}.remote-phone-item span.ok{background:#dcfce7;color:#166534}.remote-phone-item span.bad{background:#fee2e2;color:#991b1b}.remote-phone-item span.wait{background:#e0f2fe;color:#075985}@media(max-width:680px){.remote-scanner-grid{grid-template-columns:1fr}.remote-qr-box{margin:auto}.remote-phone-reader{height:300px}}';
+  css.textContent='.remote-silent-sync .syncing{animation:none!important;transform:none!important}.remote-silent-sync #syncState{transition:none!important}.remote-scanner-btn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.remote-scanner-modal-back{position:fixed;inset:0;background:rgba(15,23,42,.66);backdrop-filter:blur(7px);z-index:900;display:flex;align-items:flex-start;justify-content:center;padding:44px 12px;overflow:auto}.remote-scanner-modal{width:min(780px,96vw);background:#fff;border-radius:26px;padding:16px;box-shadow:0 30px 80px rgba(0,0,0,.28)}.remote-scanner-grid{display:grid;grid-template-columns:250px 1fr;gap:18px;align-items:start}.remote-qr-box{width:240px;height:240px;border:1px solid #d8e8e1;border-radius:22px;background:#f8fffb;display:flex;align-items:center;justify-content:center;padding:10px}.remote-status-pill{margin-top:10px;background:#dcfce7;color:#166534;padding:8px 10px;border-radius:999px;text-align:center;font-weight:900}.remote-label{display:block;font-weight:950;margin-bottom:6px}.remote-scanner-modal textarea{width:100%;min-height:96px;direction:ltr;text-align:left;font-size:12px}.remote-help{margin-top:10px;color:#64748b;font-size:13px;font-weight:800}.remote-phone-body{margin:0!important;background:#031713!important;color:#fff!important;direction:rtl;min-height:100vh}.remote-phone-page{min-height:100vh;padding:14px;display:flex;flex-direction:column;gap:12px}.remote-phone-head{display:flex;align-items:center;justify-content:space-between;padding:14px;border:1px solid rgba(255,255,255,.14);border-radius:22px;background:linear-gradient(135deg,#064e3b,#0f9f6e)}.remote-phone-head b{display:block;font-size:20px}.remote-phone-head span{display:block;font-size:12px;color:#d7fff0;font-weight:800}.remote-phone-head span.bad{color:#fecaca}.remote-dot{width:13px;height:13px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 7px rgba(34,197,94,.16)}.remote-phone-reader{height:315px;max-height:42vh;border:3px solid #22c55e;border-radius:24px;overflow:hidden;background:#000}.remote-phone-reader video{object-fit:cover!important}.remote-phone-note{font-weight:900;color:#b7f7dc;text-align:center}.remote-manual-box{background:#fff;color:#10251f;border-radius:24px;padding:14px;box-shadow:0 18px 50px rgba(0,0,0,.18)}.remote-manual-box label{display:block;font-weight:950;margin-bottom:8px}.remote-manual-box input{width:100%;border:1px solid #d8e8e1;border-radius:16px;min-height:44px;padding:9px 12px;font-weight:900}.remote-manual-results{max-height:245px;overflow:auto;margin-top:8px}.remote-manual-item{width:100%;border:1px solid #d8e8e1;background:#f8fffb;color:#10251f;border-radius:16px;padding:10px;text-align:right;margin-bottom:7px}.remote-manual-item b{display:block;font-size:15px}.remote-manual-item small{display:block;color:#64748b;font-weight:800}.remote-phone-added{background:#fff;color:#10251f;border-radius:24px;padding:14px;box-shadow:0 18px 50px rgba(0,0,0,.25)}.remote-phone-added h4{margin:0 0 10px;font-size:17px}.remote-phone-item{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #d8e8e1;border-radius:18px;padding:10px;margin-bottom:8px}.remote-phone-item b{display:block}.remote-phone-item small{display:block;color:#64748b;font-weight:800}.remote-phone-item span{border-radius:999px;padding:5px 9px;font-weight:950;font-size:11px;white-space:nowrap}.remote-phone-item span.ok{background:#dcfce7;color:#166534}.remote-phone-item span.bad{background:#fee2e2;color:#991b1b}.remote-phone-item span.wait{background:#e0f2fe;color:#075985}@media(max-width:680px){.remote-scanner-grid{grid-template-columns:1fr}.remote-qr-box{margin:auto}.remote-phone-reader{height:290px}}';
   document.head.appendChild(css);
 
   if(isRemotePhone()){
