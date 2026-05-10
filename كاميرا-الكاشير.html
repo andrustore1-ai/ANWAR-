@@ -2,145 +2,108 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#031713">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#020617">
 <title>كاميرا الكاشير</title>
 <script src="firebase.js"></script>
+<script src="oskar-core-fix.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:#031713;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;min-height:100vh;direction:rtl}.page{min-height:100vh;padding:10px;display:flex;flex-direction:column;gap:10px}.head{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(135deg,#064e3b,#0f9f6e);border:1px solid rgba(255,255,255,.16);border-radius:22px;padding:13px 14px;box-shadow:0 18px 50px rgba(0,0,0,.26)}.head b{display:block;font-size:20px;font-weight:950}.head span{display:block;color:#d7fff0;font-size:12px;font-weight:800}.badge{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 10px;font-weight:900;white-space:nowrap}.camera{position:relative;flex:1;min-height:420px;border-radius:26px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.15);box-shadow:0 24px 70px rgba(0,0,0,.32)}video,#reader{width:100%;height:100%;object-fit:cover;display:block}.scan-frame{position:absolute;inset:17%;border:3px solid #22c55e;border-radius:22px;box-shadow:0 0 0 999px rgba(0,0,0,.18),0 0 28px rgba(34,197,94,.55);pointer-events:none}.scan-line{position:absolute;left:18%;right:18%;height:3px;background:#22c55e;box-shadow:0 0 15px #22c55e;animation:scan .78s ease-in-out infinite;pointer-events:none}@keyframes scan{0%{top:22%}50%{top:78%}100%{top:22%}}.status{border-radius:22px;padding:13px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-weight:900;line-height:1.7}.status small{display:block;color:#bdebdc;font-weight:800}.status.err{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.35)}.last{display:grid;gap:7px;max-height:140px;overflow:auto}.item{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:9px 11px;font-weight:900;direction:ltr;text-align:left}.btn{border:0;border-radius:16px;padding:12px 16px;font-weight:950;background:#ef4444;color:#fff;font-family:inherit}@media(max-height:720px){.camera{min-height:330px}.scan-frame{inset:14%}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;background:#020617;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;overflow:hidden}.cam-page{position:fixed;inset:0;display:flex;flex-direction:column}.top{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:rgba(2,6,23,.88);border-bottom:1px solid rgba(255,255,255,.08);z-index:5}.top b{font-size:17px}.state{font-size:12px;color:#bbf7d0;font-weight:800}.view{position:relative;flex:1;display:flex;align-items:center;justify-content:center;background:#000}video,#reader{width:100%;height:100%;object-fit:cover}.frame{position:absolute;width:min(78vw,420px);height:min(42vh,260px);border:3px solid #22c55e;border-radius:24px;box-shadow:0 0 0 999px rgba(0,0,0,.25),0 0 28px rgba(34,197,94,.45);z-index:3;pointer-events:none}.line{position:absolute;left:8%;right:8%;height:3px;background:#22c55e;box-shadow:0 0 18px #22c55e;animation:scan .85s ease-in-out infinite}@keyframes scan{0%{top:16%}50%{top:84%}100%{top:16%}}.bottom{min-height:86px;padding:10px 14px 16px;background:rgba(2,6,23,.92);border-top:1px solid rgba(255,255,255,.08);z-index:5}.last{font-size:13px;color:#cbd5e1;word-break:break-all;line-height:1.6}.ok{color:#86efac;font-weight:900}.bad{color:#fecaca;font-weight:900}.btn{border:0;border-radius:14px;background:#ef4444;color:#fff;font-weight:900;padding:10px 14px}.flash{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-8px);background:#16a34a;color:#fff;border-radius:999px;padding:9px 15px;font-weight:950;z-index:20;opacity:0;transition:.12s ease;white-space:nowrap}.flash.show{opacity:1;transform:translateX(-50%) translateY(0)}.hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(2,6,23,.70);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 12px;font-weight:800;color:#e2e8f0;z-index:4;white-space:nowrap;font-size:13px}
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="head"><div><b>كاميرا الكاشير</b><span>مسح باركود فقط</span></div><div class="badge" id="count">0</div></div>
-  <div class="camera"><video id="video" muted playsinline></video><div id="reader" style="display:none"></div><div class="scan-frame"></div><div class="scan-line"></div></div>
-  <div class="status" id="status">جاري فتح الكاميرا...<small>اسمح للمتصفح باستخدام الكاميرا</small></div>
-  <div class="last" id="last"></div>
-  <button class="btn" onclick="location.reload()">إعادة فتح الكاميرا</button>
+<div class="cam-page">
+  <div class="top"><b>كاميرا الكاشير</b><span class="state" id="state">تشغيل الكاميرا...</span></div>
+  <div class="view"><video id="video" playsinline muted></video><div id="reader" style="display:none"></div><div class="frame"><div class="line"></div></div><div class="hint">وجه الكاميرا نحو الباركود</div></div>
+  <div class="bottom"><div id="last" class="last">جاهز للمسح</div></div>
 </div>
+<div id="flash" class="flash">تم الالتقاط</div>
 <script>
 (function(){
   var APP_KEY='supermarket_pos_ar_v1';
-  var ROOT='remoteFastScanner';
-  var DIRECT_ROOT='oskarMobileBarcode';
-  var queue=[];
-  var sending=false;
-  var pulled=false;
-  var stream=null;
-  var html5=null;
-  var lastCode='';
-  var lastAt=0;
-  var total=0;
-
-  function $(id){return document.getElementById(id)}
-  function qs(n){try{return new URL(location.href).searchParams.get(n)||''}catch(e){return ''}}
-  function uid(){return 'scan-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9)}
-  function now(){return new Date().toISOString()}
-  function cleanKey(k){return String(k||'MOMEN-BAC72').replace(/[.#$\[\]\/]/g,'_')}
-  function setStatus(a,b,err){var s=$('status');s.className='status'+(err?' err':'');s.innerHTML=a+'<small>'+(b||'')+'</small>'}
-  function getDB(){try{return JSON.parse(localStorage.getItem(APP_KEY)||'{}')||{}}catch(e){return {}}}
-  function saveDB(d){try{localStorage.setItem(APP_KEY,JSON.stringify(d||{}))}catch(e){} return d}
-  function companyKey(d){d=d||getDB();d.settings=d.settings||{};var key=qs('companyKey')||d.settings.companyKey||localStorage.getItem('oskar_company_key')||'MOMEN-BAC72';d.settings.companyKey=key;try{localStorage.setItem('oskar_company_key',key)}catch(e){}saveDB(d);return key}
-  function root(d){d[ROOT]=d[ROOT]&&typeof d[ROOT]==='object'?d[ROOT]:{};d[ROOT].events=Array.isArray(d[ROOT].events)?d[ROOT].events:[];return d[ROOT]}
-  function beep(){try{if(navigator.vibrate)navigator.vibrate(35)}catch(e){}try{var C=window.AudioContext||window.webkitAudioContext;if(!C)return;var c=window.__beepCtx||(window.__beepCtx=new C());if(c.state==='suspended')c.resume();var o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=1120;g.gain.setValueAtTime(.001,c.currentTime);g.gain.exponentialRampToValueAtTime(.18,c.currentTime+.012);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.1);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.11)}catch(e){}}
-  function addLast(code){total++;$('count').textContent=String(total);var x=document.createElement('div');x.className='item';x.textContent=code;$('last').prepend(x);while($('last').children.length>6)$('last').lastElementChild.remove()}
-
-  function hasDirect(){return !!(window.firebase&&(typeof firebase.database==='function'||typeof firebase.firestore==='function'))}
-  async function directSend(ev){
-    if(!hasDirect())return false;
-    var key=cleanKey(companyKey(getDB()));
-    try{if(typeof firebase.database==='function'){await firebase.database().ref(DIRECT_ROOT+'/'+key+'/events/'+ev.id).set(ev);return true}}catch(e){console.warn(e)}
-    try{if(typeof firebase.firestore==='function'){await firebase.firestore().collection(DIRECT_ROOT).doc(key).collection('events').doc(ev.id).set(ev);return true}}catch(e){console.warn(e)}
-    return false;
-  }
-  async function bridgeSync(d){
-    d=d||getDB();companyKey(d);saveDB(d);
+  var QUEUE_KEY='mobileBarcodeQueue';
+  var DEFAULT_COMPANY_KEY='MOMEN-BAC72';
+  var params = new URLSearchParams(location.search);
+  var COMPANY_KEY = params.get('k') || DEFAULT_COMPANY_KEY;
+  var lastValue='', lastTime=0, dbReady=null, stream=null, detector=null, running=false, pushing=false, pending=[];
+  var video=document.getElementById('video'), state=document.getElementById('state'), last=document.getElementById('last'), flash=document.getElementById('flash');
+  function setState(t, cls){ state.textContent=t; state.className='state '+(cls||''); }
+  function setLast(t, cls){ last.textContent=t; last.className='last '+(cls||''); }
+  function beep(){try{var C=window.AudioContext||window.webkitAudioContext,ctx=new C(),o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=1175;o.type='sine';g.gain.value=.07;o.connect(g);g.connect(ctx.destination);o.start();setTimeout(function(){try{o.stop();ctx.close()}catch(e){}},65)}catch(e){}}
+  function showFlash(txt){flash.textContent=txt||'تم الالتقاط';flash.classList.add('show');clearTimeout(flash._t);flash._t=setTimeout(function(){flash.classList.remove('show')},520)}
+  function uid(){return 'mb-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9)}
+  function getDB(){try{return JSON.parse(localStorage.getItem(APP_KEY)||'{}')}catch(e){return {}}}
+  function saveDB(d){try{localStorage.setItem(APP_KEY,JSON.stringify(d||{}))}catch(e){}}
+  function ensureKey(d){d=d||getDB();d.settings=d.settings||{};d.settings.companyKey=d.settings.companyKey||COMPANY_KEY;return d}
+  async function initDB(){
+    var d=ensureKey(getDB()); saveDB(d);
     if(navigator.onLine&&window.FirebaseBridge&&typeof FirebaseBridge.sync==='function'){
-      try{d=await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true});saveDB(d);pulled=true}catch(e){console.warn(e)}
+      try{d=await FirebaseBridge.sync(d,{companyKey:COMPANY_KEY,silent:true,background:true,noRender:true});d=ensureKey(d);saveDB(d);setState('متصل');return d}catch(e){console.warn(e)}
     }
-    return getDB();
+    setState('محلي فقط','bad'); return d;
   }
-  async function bridgePush(d){
-    d=d||getDB();companyKey(d);saveDB(d);
+  async function pushDB(d){
+    d=ensureKey(d||getDB()); saveDB(d);
     if(navigator.onLine&&window.FirebaseBridge){
-      try{if(typeof FirebaseBridge.pushWithKey==='function')await FirebaseBridge.pushWithKey(companyKey(d));else await bridgeSync(d);return true}catch(e){console.warn(e)}
+      try{
+        if(typeof FirebaseBridge.pushWithKey==='function') await FirebaseBridge.pushWithKey(COMPANY_KEY,{silent:true,background:true,noRender:true});
+        else if(typeof FirebaseBridge.sync==='function'){d=await FirebaseBridge.sync(d,{companyKey:COMPANY_KEY,silent:true,background:true,noRender:true});saveDB(ensureKey(d));}
+        setState('تم الإرسال','ok'); return true;
+      }catch(e){console.warn(e)}
     }
-    return false;
+    setState('لم يتم الإرسال','bad'); return false;
   }
-  async function sendEvent(ev){
-    if(await directSend(ev))return true;
-    var d=getDB();
-    if(!pulled)d=await bridgeSync(d);
-    var r=root(d);
-    if(!r.events.some(function(x){return x.id===ev.id}))r.events.push(ev);
-    if(r.events.length>800)r.events=r.events.slice(-800);
-    saveDB(d);
-    return bridgePush(d);
+  async function enqueueBarcode(code){
+    code=String(code||'').trim(); if(!code) return;
+    pending.push(code); if(pushing) return; pushing=true;
+    while(pending.length){
+      var val=pending.shift();
+      var d=await (dbReady||Promise.resolve(ensureKey(getDB()))); d=ensureKey(d);
+      d[QUEUE_KEY]=Array.isArray(d[QUEUE_KEY])?d[QUEUE_KEY]:[];
+      d[QUEUE_KEY].push({id:uid(),barcode:val,companyKey:COMPANY_KEY,createdAt:new Date().toISOString(),status:'new',source:'mobile-camera'});
+      d[QUEUE_KEY]=d[QUEUE_KEY].slice(-120); saveDB(d);
+      var ok=await pushDB(d);
+      setLast(ok ? ('تم إرسال الباركود: '+val) : ('التقطت الباركود ولم أستطع إرساله: '+val), ok?'ok':'bad');
+    }
+    pushing=false;
   }
-  async function flush(){
-    if(sending||!queue.length)return;
-    sending=true;
-    try{
-      while(queue.length){
-        var ev=queue[0];
-        var ok=await sendEvent(ev);
-        if(!ok)break;
-        queue.shift();
-        setStatus('تم إرسال الباركود للكاشير','آخر رقم: '+ev.code,false);
-      }
-    }catch(e){console.warn(e);setStatus('تم الالتقاط وينتظر الاتصال','سيتم الإرسال تلقائيًا',true)}
-    sending=false;
+  function onCode(code){
+    code=String(code||'').trim(); if(!code) return;
+    var now=Date.now(); if(code===lastValue && now-lastTime<900) return;
+    lastValue=code; lastTime=now; beep(); showFlash('تم الالتقاط'); setLast('إرسال: '+code);
+    enqueueBarcode(code);
   }
-  function handleCode(raw){
-    var code=String(raw||'').trim();
-    if(!code)return;
-    var t=Date.now();
-    if(code===lastCode&&t-lastAt<650)return;
-    lastCode=code;lastAt=t;
-    beep();addLast(code);setStatus('تم التقاط الباركود','الرقم: '+code,false);
-    queue.push({id:uid(),code:code,barcode:code,status:'pending',source:'phone-camera',createdAt:now(),companyKey:companyKey(getDB())});
-    flush();
-  }
-
   async function startNative(){
-    if(!('BarcodeDetector' in window))throw new Error('no native detector');
-    var formats=[];try{formats=await BarcodeDetector.getSupportedFormats()}catch(e){}
-    var wanted=['ean_13','ean_8','code_128','code_39','code_93','codabar','itf','upc_a','upc_e','qr_code'];
-    var use=formats.length?wanted.filter(function(x){return formats.indexOf(x)>-1}):wanted;
-    var detector=new BarcodeDetector({formats:use});
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
-    var v=$('video');v.srcObject=stream;await v.play();setStatus('الكاميرا تعمل','وجه الكاميرا على باركود المنتج',false);
-    var busy=false;
-    async function loop(){
-      if(!busy&&v.readyState>=2){
-        busy=true;
-        try{var list=await detector.detect(v);if(list&&list[0])handleCode(list[0].rawValue||list[0].rawData||'')}catch(e){}
-        busy=false;
-      }
-      requestAnimationFrame(loop);
-    }
-    loop();
+    if(!('BarcodeDetector' in window) || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return false;
+    try{
+      detector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','code_93','itf','codabar','qr_code']});
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
+      video.srcObject=stream; await video.play(); running=true; setState('الكاميرا تعمل','ok');
+      loopDetect(); return true;
+    }catch(e){console.warn(e);return false;}
+  }
+  async function loopDetect(){
+    if(!running||!detector) return;
+    try{var codes=await detector.detect(video); if(codes&&codes[0]) onCode(codes[0].rawValue||codes[0].displayValue||'');}catch(e){}
+    requestAnimationFrame(loopDetect);
   }
   async function startHtml5(){
-    if(!window.Html5Qrcode)throw new Error('html5-qrcode غير متاح');
-    $('video').style.display='none';$('reader').style.display='block';
-    html5=new Html5Qrcode('reader',{verbose:false});
-    var formats=[];try{if(window.Html5QrcodeSupportedFormats)formats=Object.keys(Html5QrcodeSupportedFormats).map(function(k){return Html5QrcodeSupportedFormats[k]}).filter(function(x){return typeof x==='number'})}catch(e){}
-    await html5.start({facingMode:'environment'},{fps:30,qrbox:function(w,h){return {width:Math.min(w-30,560),height:Math.min(300,h-30)}},aspectRatio:1.777,formatsToSupport:formats},function(decoded){handleCode(decoded)},function(){});
-    setStatus('الكاميرا تعمل','وجه الكاميرا على باركود المنتج',false);
+    video.style.display='none'; var reader=document.getElementById('reader'); reader.style.display='block';
+    if(!window.Html5Qrcode){setState('تعذر تحميل القارئ','bad');setLast('افتح الصفحة من HTTPS وتأكد من الإنترنت لأول تشغيل','bad');return;}
+    try{
+      var qr=new Html5Qrcode('reader',{verbose:false});
+      await qr.start({facingMode:'environment'},{fps:24,qrbox:function(w,h){var s=Math.floor(Math.min(w,h)*.72);return{width:s,height:Math.floor(s*.62)}},aspectRatio:1.777},function(decoded){onCode(decoded)},function(){});
+      setState('الكاميرا تعمل','ok');
+    }catch(e){console.warn(e);setState('الكاميرا مرفوضة','bad');setLast('اسمح بصلاحية الكاميرا وافتح الرابط عبر HTTPS','bad');}
   }
   async function start(){
-    companyKey(getDB());
-    setInterval(flush,300);
-    bridgeSync(getDB());
-    if(!window.isSecureContext&&location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'){
-      setStatus('الكاميرا تحتاج رابط آمن','افتح الصفحة من HTTPS حتى تظهر صلاحية الكاميرا',true);return;
-    }
-    try{await startNative()}catch(e){try{await startHtml5()}catch(err){console.warn(err);setStatus('تعذر فتح الكاميرا','اسمح بالكاميرا من المتصفح وتأكد أن الرابط HTTPS',true)}}
+    dbReady=initDB();
+    var nativeOK=await startNative();
+    if(!nativeOK) await startHtml5();
   }
-  document.addEventListener('visibilitychange',function(){if(!document.hidden)flush()});
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+  document.addEventListener('visibilitychange',function(){if(!document.hidden && !running && video.style.display!=='none') startNative();});
+  start();
 })();
 </script>
 </body>

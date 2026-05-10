@@ -52,6 +52,21 @@ body{background:radial-gradient(circle at top left,rgba(16,185,129,.14),transpar
 <style id="oskar-final-fix-css">
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');*{font-family:'Cairo',system-ui,Tahoma,Arial!important}.footer-note{font-weight:900;color:#0b3b30!important}.sync-badge{display:inline-flex!important;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-weight:950;color:#fff}.sync-badge:before{content:'';width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.18)}.sync-badge.offline:before{background:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.18)}.branch-switcher{position:relative;display:inline-flex;margin-inline-start:8px;z-index:90}.branch-btn{height:36px;border:1px solid rgba(255,255,255,.25);border-radius:14px;background:rgba(255,255,255,.14);color:#fff;font-weight:950;padding:0 11px;cursor:pointer}.branch-list{position:absolute;top:44px;right:0;min-width:230px;background:#fff;color:#10251f;border:1px solid #d8e8e1;border-radius:18px;box-shadow:0 20px 55px rgba(6,78,59,.22);padding:8px;display:none}.branch-switcher.open .branch-list{display:block}.branch-option{width:100%;border:0;background:#fff;text-align:right;border-radius:13px;padding:10px 12px;font-weight:900}.branch-option:hover,.branch-option.active{background:#eaf8f0;color:#087a59}.kpis{gap:16px!important;margin-bottom:18px!important}.kpi.color-card,.profit-color-card{color:#fff!important;border:0!important}.kpi.color-card span,.kpi.color-card strong,.profit-color-card span,.profit-color-card strong{color:#fff!important}.kpi.blue,.profit-1{background:linear-gradient(135deg,#3b82f6,#1d4ed8)!important}.kpi.green,.profit-2{background:linear-gradient(135deg,#22c55e,#047857)!important}.kpi.orange,.profit-3{background:linear-gradient(135deg,#f97316,#ea580c)!important}.kpi.red,.profit-4{background:linear-gradient(135deg,#ef4444,#b91c1c)!important}.kpi.purple-card,.profit-5{background:linear-gradient(135deg,#8b5cf6,#5b21b6)!important}.items-spacing .table-toolbar{margin-top:18px!important}.invoice-tools,.action-icons{display:flex!important;flex-direction:row!important;gap:6px!important;flex-wrap:nowrap!important}.invoice-tools .btn{width:34px!important;height:34px!important;min-height:34px!important;padding:0!important;font-size:0!important;border-radius:12px!important}.invoice-tools .btn:before{font-size:15px}.invoice-tools .btn:nth-child(1):before{content:'👁️'}.invoice-tools .btn:nth-child(2):before{content:'✏️'}.invoice-tools .btn:nth-child(3):before{content:'🖨️'}.invoice-tools .btn:nth-child(4):before{content:'🖼️'}.invoice-tools .btn:nth-child(5):before{content:'🗑️'}.blocked-card{max-width:720px;margin:30px auto;text-align:center;padding:34px;border:1px solid #fecaca;background:#fff7f7;color:#991b1b;border-radius:26px}.perm-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.perm-card{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #d8e8e1;border-radius:14px;background:#fff;font-weight:900}.customer-search-box{position:relative}.customer-search-results{position:absolute;top:100%;right:0;left:0;background:#fff;border:1px solid #d8e8e1;border-radius:16px;box-shadow:0 18px 48px rgba(6,78,59,.16);padding:6px;z-index:150;max-height:230px;overflow:auto;display:none}.customer-search-box.open .customer-search-results{display:block}.customer-result{border:0;background:#fff;width:100%;text-align:right;padding:10px;border-radius:12px;font-weight:900}.popular-strip{margin:0 0 12px;padding:12px;border:1px solid #d8e8e1;border-radius:20px;background:#fff}.popular-title{font-weight:950;margin-bottom:10px}.popular-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.popular-card{border:1px solid #dce8e2;background:#fff;border-radius:16px;padding:10px;cursor:pointer}.popular-card b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.popular-card small{display:block;color:#64748b}@media(max-width:760px){.perm-grid{grid-template-columns:1fr}.popular-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.invoice-tools .btn{width:31px!important;height:31px!important}}
 </style>
+
+
+<style id="oskar-mobile-barcode-final-style">
+/* زر وسجل باركود الجوال: بدون اهتزاز وبدون تأثير على المزامنة */
+.syncing{animation:none!important;transform:none!important}
+.oskar-mobile-scan-btn{white-space:nowrap;background:linear-gradient(135deg,#0f9f6e,#047857)!important;color:#fff!important}
+.oskar-remote-modal-back{position:fixed;inset:0;background:rgba(2,6,23,.58);backdrop-filter:blur(5px);z-index:9999;display:none;align-items:center;justify-content:center;padding:14px}
+.oskar-remote-modal{width:min(440px,96vw);background:#fff;border:1px solid #d8e8e1;border-radius:24px;padding:18px;box-shadow:0 30px 85px rgba(0,0,0,.28);text-align:center;color:#10251f}
+.oskar-remote-modal h3{margin:0 0 6px;font-size:21px;font-weight:950;color:#064e3b}
+.oskar-remote-modal p{margin:0 0 12px;color:#64748b;font-weight:800}
+.oskar-remote-qr{width:230px;height:230px;border:1px solid #d8e8e1;border-radius:18px;padding:10px;background:#fff;object-fit:contain;margin:8px auto 12px;display:block}
+.oskar-remote-link{direction:ltr;text-align:left;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:10px;font-size:12px;word-break:break-all;color:#0f172a;margin:8px 0 12px}
+.oskar-remote-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.oskar-scan-pulse{position:fixed;top:80px;left:18px;background:#064e3b;color:#fff;border-radius:999px;padding:8px 12px;z-index:9998;font-weight:950;box-shadow:0 18px 45px rgba(6,78,59,.25);opacity:0;transform:translateY(-6px);transition:.16s ease}.oskar-scan-pulse.show{opacity:1;transform:translateY(0)}
+@media(max-width:760px){.oskar-remote-modal{border-radius:20px;padding:14px}.oskar-remote-qr{width:210px;height:210px}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -135,295 +150,6 @@ body{background:linear-gradient(180deg,#f4faf7,#eef5f1)!important;color:var(--in
 </head><body><h2>${DB.settings.storeName||'كاشير أوسكار'}</h2><div class="meta">رقم: ${rec.invoiceNo}<br>التاريخ: ${rec.date}<br>العميل: ${rec.customerName}</div><table><thead><tr><th>الصنف</th><th>كمية</th><th>سعر</th><th>مجموع</th></tr></thead><tbody>${rows}</tbody></table><div class="total">الإجمالي: ${money(rec.total)}</div><div>المدفوع: ${money(rec.paid)} - المستحق: ${money(rec.due)}</div><button onclick="print()">طباعة</button>
 
 
-
-
-
-<!-- Oskar fixed mobile barcode scanner: stable link + silent sync -->
-<script id="oskar-fixed-mobile-barcode-v5">
-(function(){
-  if(window.__OSKAR_FIXED_MOBILE_BARCODE_V5__) return;
-  window.__OSKAR_FIXED_MOBILE_BARCODE_V5__ = true;
-
-  var APP_KEY = 'supermarket_pos_ar_v1';
-  var ROOT = 'remoteFastScanner';
-  var DIRECT_ROOT = 'oskarMobileBarcode';
-  var receiverTimer = null;
-  var bridgeBusy = false;
-  var processedMemory = null;
-
-  function $(id){ return document.getElementById(id); }
-  function safeText(v){ return String(v == null ? '' : v); }
-  function esc(v){ return safeText(v).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
-  function now(){ return new Date().toISOString(); }
-  function cleanKey(k){ return safeText(k || 'MOMEN-BAC72').replace(/[.#$\[\]\/]/g,'_'); }
-  function isCashier(){ return (window.CFG && CFG.kind === 'cashier') || /الكاشير/i.test(decodeURIComponent(location.pathname)); }
-
-  function getDB(){
-    try{ if(typeof loadDB === 'function') return loadDB(); }catch(e){}
-    try{ return JSON.parse(localStorage.getItem(APP_KEY) || '{}') || {}; }catch(e){ return {}; }
-  }
-  function setGlobalDB(d){
-    try{ DB = d; }catch(e){}
-    try{ window.DB = d; }catch(e){}
-  }
-  function saveLocal(d){
-    d = d || getDB();
-    setGlobalDB(d);
-    try{ if(typeof saveDB === 'function') saveDB(d); else localStorage.setItem(APP_KEY, JSON.stringify(d)); }catch(e){ try{ localStorage.setItem(APP_KEY, JSON.stringify(d)); }catch(x){} }
-    return d;
-  }
-  function companyKey(d){
-    d = d || getDB();
-    d.settings = d.settings || {};
-    var key = d.settings.companyKey || localStorage.getItem('oskar_company_key') || 'MOMEN-BAC72';
-    d.settings.companyKey = key;
-    try{ localStorage.setItem('oskar_company_key', key); }catch(e){}
-    return key;
-  }
-  function root(d){
-    d[ROOT] = d[ROOT] && typeof d[ROOT] === 'object' ? d[ROOT] : {};
-    d[ROOT].events = Array.isArray(d[ROOT].events) ? d[ROOT].events : [];
-    return d[ROOT];
-  }
-  function products(d){ return Array.isArray(d.products) ? d.products.filter(function(p){ return p && !p._deleted && p.active !== 'غير نشط'; }) : []; }
-  function norm(v){ return safeText(v).trim().toLowerCase(); }
-  function findProduct(code){
-    var d = getDB(), c = norm(code);
-    if(!c) return null;
-    var rows = products(d);
-    return rows.find(function(p){
-      return [p.barcode, p.sku, p.code, p.itemCode, p.productCode].some(function(x){ return norm(x) === c; });
-    }) || null;
-  }
-  function setBarcodeField(code){
-    var input = $('productSearch');
-    if(input){
-      input.value = safeText(code);
-      try{ input.dispatchEvent(new Event('input',{bubbles:true})); }catch(e){}
-    }
-  }
-  function playTone(kind){
-    try{ if(navigator.vibrate) navigator.vibrate(kind === 'bad' ? 120 : 35); }catch(e){}
-    try{
-      var C = window.AudioContext || window.webkitAudioContext;
-      if(!C) return;
-      var ctx = window.__oskarBeepCtx || (window.__oskarBeepCtx = new C());
-      if(ctx.state === 'suspended') ctx.resume();
-      var o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = 'sine';
-      o.frequency.value = kind === 'bad' ? 220 : 1040;
-      g.gain.setValueAtTime(0.001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + 0.012);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
-      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.12);
-    }catch(e){}
-  }
-  function addToCartByProduct(p){
-    if(!p) return false;
-    try{
-      var arr;
-      try{ arr = cart; }catch(e){ arr = window.cart; }
-      if(!Array.isArray(arr)) arr = [];
-      var line = arr.find(function(i){ return i && i.productId === p.id; });
-      if(line){
-        line.qty = Number(line.qty || 0) + 1;
-        if(typeof renderCart === 'function') renderCart();
-      }else if(typeof addProductToCart === 'function'){
-        addProductToCart(p.id);
-      }else{
-        return false;
-      }
-      return true;
-    }catch(e){ console.warn(e); return false; }
-  }
-  function addBarcode(code){
-    setBarcodeField(code);
-    var p = findProduct(code);
-    if(!p && typeof productSearch === 'function'){
-      try{
-        var rows = productSearch(code) || [];
-        var c = norm(code);
-        p = rows.find(function(x){ return [x.barcode,x.sku,x.code,x.itemCode,x.productCode].some(function(v){return norm(v)===c;}); }) || rows[0] || null;
-      }catch(e){}
-    }
-    if(!p){ playTone('bad'); return {ok:false, message:'لم يتم العثور على الصنف'}; }
-    var ok = addToCartByProduct(p);
-    playTone(ok ? 'ok' : 'bad');
-    return {ok:ok, product:p};
-  }
-  function doneSet(){
-    if(processedMemory) return processedMemory;
-    try{ processedMemory = new Set(JSON.parse(localStorage.getItem('oskar_mobile_barcode_done') || '[]')); }catch(e){ processedMemory = new Set(); }
-    return processedMemory;
-  }
-  function remember(id){
-    var s = doneSet(); s.add(id);
-    var a = Array.from(s).slice(-1200);
-    processedMemory = new Set(a);
-    try{ localStorage.setItem('oskar_mobile_barcode_done', JSON.stringify(a)); }catch(e){}
-  }
-  function processEvent(ev, markRemote){
-    if(!ev || !ev.id || ev.status !== 'pending') return;
-    if(doneSet().has(ev.id)){ if(markRemote) markRemote('added'); return; }
-    var res = addBarcode(ev.code || ev.barcode || '');
-    remember(ev.id);
-    if(markRemote){ markRemote(res.ok ? 'added' : 'not_found', res); }
-    var status = $('mobileBarcodeStatus');
-    if(status) status.textContent = res.ok ? ('تمت إضافة: ' + (res.product && res.product.name ? res.product.name : ev.code)) : ('باركود غير موجود: ' + (ev.code || ''));
-  }
-
-  async function silentPush(d){
-    d = saveLocal(d || getDB());
-    if(!navigator.onLine || !window.FirebaseBridge) return d;
-    try{
-      if(typeof FirebaseBridge.pushWithKey === 'function') await FirebaseBridge.pushWithKey(companyKey(d));
-      else if(typeof FirebaseBridge.sync === 'function') d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true});
-    }catch(e){ console.warn(e); }
-    saveLocal(d);
-    return d;
-  }
-  async function silentPull(){
-    var d = getDB(); companyKey(d); saveLocal(d);
-    if(!navigator.onLine || !window.FirebaseBridge || typeof FirebaseBridge.sync !== 'function') return d;
-    try{ d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true}); }catch(e){ console.warn(e); }
-    return saveLocal(d);
-  }
-  async function bridgePoll(){
-    if(bridgeBusy || !isCashier()) return;
-    bridgeBusy = true;
-    try{
-      var d = await silentPull(), r = root(d), changed = false;
-      r.events.forEach(function(ev){
-        if(!ev || ev.status !== 'pending') return;
-        processEvent(ev, function(status,res){
-          ev.status = status;
-          ev.processedAt = now();
-          if(res && res.product){ ev.productId = res.product.id; ev.productName = res.product.name || ''; }
-          changed = true;
-        });
-      });
-      if(r.events.length > 800){ r.events = r.events.slice(-800); changed = true; }
-      if(changed) await silentPush(d);
-    }finally{ bridgeBusy = false; }
-  }
-
-  function directFirebaseAvailable(){ return !!(window.firebase && (typeof firebase.database === 'function' || typeof firebase.firestore === 'function')); }
-  function startDirectListener(){
-    if(window.__oskarDirectBarcodeListenerStarted || !directFirebaseAvailable()) return false;
-    window.__oskarDirectBarcodeListenerStarted = true;
-    var key = cleanKey(companyKey(getDB()));
-    try{
-      if(typeof firebase.database === 'function'){
-        var ref = firebase.database().ref(DIRECT_ROOT + '/' + key + '/events');
-        ref.limitToLast(80).on('child_added', function(snap){
-          var ev = snap.val() || {};
-          processEvent(ev, function(status,res){
-            var upd = {status:status, processedAt:now()};
-            if(res && res.product){ upd.productId = res.product.id; upd.productName = res.product.name || ''; }
-            try{ ref.child(snap.key).update(upd); }catch(e){}
-          });
-        });
-        return true;
-      }
-    }catch(e){ console.warn(e); }
-    try{
-      if(typeof firebase.firestore === 'function'){
-        firebase.firestore().collection(DIRECT_ROOT).doc(key).collection('events').where('status','==','pending').onSnapshot(function(qs){
-          qs.docChanges().forEach(function(ch){
-            if(ch.type !== 'added' && ch.type !== 'modified') return;
-            var ev = ch.doc.data() || {}; ev.id = ev.id || ch.doc.id;
-            processEvent(ev, function(status,res){
-              var upd = {status:status, processedAt:now()};
-              if(res && res.product){ upd.productId = res.product.id; upd.productName = res.product.name || ''; }
-              try{ ch.doc.ref.update(upd); }catch(e){}
-            });
-          });
-        });
-        return true;
-      }
-    }catch(e){ console.warn(e); }
-    return false;
-  }
-  function startReceiver(){
-    if(!isCashier()) return;
-    startDirectListener();
-    if(!receiverTimer){ bridgePoll(); receiverTimer = setInterval(bridgePoll, 700); }
-  }
-
-  function cameraLink(){
-    var u = new URL('كاميرا-الكاشير.html', location.href);
-    u.searchParams.set('companyKey', companyKey(getDB()));
-    return u.toString();
-  }
-  function drawQR(link){
-    var box = $('mobileBarcodeQr');
-    if(!box) return;
-    box.innerHTML = '<img alt="QR" style="width:220px;height:220px;border-radius:16px" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(link) + '">';
-  }
-  function openModal(){
-    var old = $('mobileBarcodeModal'); if(old) old.remove();
-    var link = cameraLink();
-    var div = document.createElement('div');
-    div.id = 'mobileBarcodeModal';
-    div.className = 'mobile-barcode-modal-back';
-    div.innerHTML = '<div class="mobile-barcode-modal"><div class="mobile-barcode-head"><h3>قارئ باركود الجوال</h3><button type="button" class="btn small danger" id="mobileBarcodeClose">×</button></div><div class="mobile-barcode-grid"><div><div id="mobileBarcodeQr" class="mobile-barcode-qr">QR</div><div id="mobileBarcodeStatus" class="mobile-barcode-status">جاهز للاستقبال</div></div><div><p class="muted">امسح هذا الكود بالجوال. الرابط ثابت ويفتح كاميرا الباركود فقط.</p><label class="mobile-barcode-label">الرابط الثابت</label><textarea readonly id="mobileBarcodeLink"></textarea><div class="tools" style="margin-top:10px"><button type="button" class="btn success" id="mobileBarcodeCopy">نسخ الرابط</button></div><div class="mobile-barcode-help">ارفع ملف <b>كاميرا-الكاشير.html</b> بجانب ملف الكاشير، وافتحه من HTTPS حتى تعمل الكاميرا.</div></div></div></div>';
-    document.body.appendChild(div);
-    $('mobileBarcodeLink').value = link;
-    drawQR(link);
-    $('mobileBarcodeClose').onclick = function(){ div.remove(); };
-    div.addEventListener('click',function(e){ if(e.target === div) div.remove(); });
-    $('mobileBarcodeCopy').onclick = function(){ try{ navigator.clipboard.writeText(link); }catch(e){} if(window.toast) toast('تم نسخ الرابط'); };
-    startReceiver();
-  }
-  function injectButton(){
-    if(!isCashier()) return;
-    var input = $('productSearch');
-    if(!input || $('mobileBarcodeButton')) return;
-    var toolbar = input.closest('.table-toolbar') || input.parentElement;
-    if(!toolbar) return;
-    var btn = document.createElement('button');
-    btn.id = 'mobileBarcodeButton';
-    btn.type = 'button';
-    btn.className = 'btn ghost mobile-barcode-button';
-    btn.innerHTML = '<span style="font-size:18px">▥</span><span>جوال</span>';
-    btn.onclick = openModal;
-    toolbar.appendChild(btn);
-    startReceiver();
-  }
-
-  function installSilentSync(){
-    var css = document.createElement('style');
-    css.id = 'oskar-mobile-barcode-style';
-    css.textContent = '.syncing{animation:none!important;transform:none!important}.top-actions button[onclick*="syncNow"]{transition:none!important}.mobile-barcode-button{white-space:nowrap}.mobile-barcode-modal-back{position:fixed;inset:0;background:rgba(15,23,42,.66);backdrop-filter:blur(7px);z-index:980;display:flex;align-items:flex-start;justify-content:center;padding:42px 12px;overflow:auto}.mobile-barcode-modal{width:min(780px,96vw);background:#fff;border-radius:26px;padding:16px;box-shadow:0 30px 80px rgba(0,0,0,.28)}.mobile-barcode-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5eee8;padding-bottom:10px;margin-bottom:12px}.mobile-barcode-head h3{margin:0;font-size:20px;font-weight:950}.mobile-barcode-grid{display:grid;grid-template-columns:250px 1fr;gap:18px}.mobile-barcode-qr{width:240px;height:240px;border:1px solid #d8e8e1;border-radius:22px;background:#f8fffb;display:flex;align-items:center;justify-content:center;padding:10px}.mobile-barcode-status{margin-top:10px;background:#dcfce7;color:#166534;padding:8px 10px;border-radius:999px;text-align:center;font-weight:900}.mobile-barcode-label{display:block;font-weight:950;margin-bottom:6px}.mobile-barcode-modal textarea{width:100%;min-height:96px;direction:ltr;text-align:left;font-size:12px}.mobile-barcode-help{margin-top:10px;color:#64748b;font-size:13px;font-weight:800}@media(max-width:680px){.mobile-barcode-grid{grid-template-columns:1fr}.mobile-barcode-qr{margin:auto}}';
-    document.head.appendChild(css);
-    window.syncNow = async function(show){
-      var d = getDB();
-      if(!navigator.onLine){ return d; }
-      try{
-        if(window.FirebaseBridge && typeof FirebaseBridge.sync === 'function'){
-          d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true});
-          saveLocal(d);
-        }
-      }catch(e){ console.warn(e); }
-      try{ var b = $('syncState'); if(b) b.textContent = navigator.onLine ? 'متصل' : 'بدون نت'; }catch(e){}
-      return d;
-    };
-    try{ syncNow = window.syncNow; }catch(e){}
-  }
-
-  var oldRenderCashier = window.renderCashier;
-  if(typeof oldRenderCashier === 'function' && !oldRenderCashier.__mobileBarcodeWrapped){
-    var wrapped = function(){ var r = oldRenderCashier.apply(this, arguments); setTimeout(injectButton, 0); setTimeout(startReceiver, 80); return r; };
-    wrapped.__mobileBarcodeWrapped = true;
-    window.renderCashier = wrapped;
-    try{ renderCashier = wrapped; }catch(e){}
-  }
-
-  installSilentSync();
-  document.addEventListener('DOMContentLoaded', function(){ setTimeout(injectButton, 120); setTimeout(startReceiver, 180); });
-  if(document.readyState !== 'loading'){ setTimeout(injectButton, 120); setTimeout(startReceiver, 180); }
-})();
-</script>
 
 </body></html>`);w.document.close()}
 function renderSaleForm(flags={}){let isDraft=CFG.options?.draft, isQuotation=CFG.options?.quotation;byId('mainCard').innerHTML=`<div class="grid"><div class="field"><label>الفرع</label><select id="branch">${optionsHTML(collection('branches'),'name','name','اختر الفرع')}</select></div><div class="field"><label>العميل</label><select id="customerId">${optionsHTML(collection('customers'),'name','id','زبون نقدي')}</select></div><div class="field"><label>تاريخ البيع</label><input id="saleDate" type="date" value="${todayISO()}"></div><div class="field"><label>رقم الفاتورة</label><input id="invoiceNo" placeholder="اتركه فارغًا للإنشاء التلقائي"></div><div class="field"><label>حالة الشحن والتوصيل</label><select id="deliveryStatus"><option></option><option>بدون توصيل</option><option>قيد التجهيز</option><option>في الطريق</option><option>تم التسليم</option></select></div></div><div class="card" style="box-shadow:none"><div class="table-toolbar"><input class="search" id="productSearch" placeholder="أدخل اسم الصنف / SKU / مسح الباركود" oninput="showProductResults(this.value)"><button class="btn ghost" onclick="startScanner(v=>{document.getElementById('productSearch').value=v;showProductResults(v);})">كاميرا</button></div><div id="productResults" class="product-results"></div><div class="table-wrap"><table class="data-table"><thead><tr><th>صنف</th><th>سعر الوحدة</th><th>الكمية</th><th>خصم الوحدة</th><th>المجموع</th><th>حذف</th></tr></thead><tbody id="cartBody"></tbody></table></div><div class="tools" style="margin-top:12px"><button class="btn success" onclick="toggleBox('discountBox')">إضافة خصومات</button><button class="btn primary" onclick="toggleBox('shippingBox')">إضافة شحن وتوصيل</button></div><div id="discountBox" class="card hide"><div class="grid"><div class="field"><label>قيمة الخصم</label><input type="number" id="discountAmount" value="0" oninput="renderCart()"></div></div></div><div id="shippingBox" class="card hide"><div class="grid"><div class="field"><label>تكلفة الشحن</label><input type="number" id="shippingAmount" value="0" oninput="renderCart()"></div><div class="field"><label>ملاحظات الشحن</label><input id="shippingNote"></div></div></div></div>${isDraft||isQuotation?'':`<div class="card"><h3>إضافة الدفع</h3><div class="grid"><div class="field"><label>الإجمالي</label><b id="grandTotal">0.00</b></div><div class="field"><label>المبلغ المدفوع</label><input id="payAmount" type="number" value="0" oninput="this.dataset.touched=1;renderCart()"></div><div class="field"><label>المدفوعة على</label><input type="date" value="${todayISO()}"></div><div class="field"><label>طريقة الدفع</label><select id="paymentMethod"><option>نقدي</option><option>تطبيق فوري</option><option>تطبيق لاحق</option><option>دين</option><option>تحويل بنكي</option></select></div><div class="field"><label>حساب</label><select id="accountId">${optionsHTML(collection('accounts'),'name','id','اختر الحساب')}</select></div><div class="field"><label>ملاحظة الدفع</label><input id="paymentNote"></div><div class="field"><label>الرصيد المستحق</label><b id="dueAmount" style="color:#dc2626">0.00</b></div></div></div>`}<div class="tools" style="justify-content:center"><button class="btn purple" onclick="saveSaleLike('${isDraft?'draftSales':isQuotation?'quotations':'sales'}',{draft:${!!isDraft},quotation:${!!isQuotation}})">حفظ</button><button class="btn success" onclick="saveSaleLike('${isDraft?'draftSales':isQuotation?'quotations':'sales'}',{draft:${!!isDraft},quotation:${!!isQuotation}})">حفظ وطباعة</button></div>`;showProductResults('');renderCart()}
@@ -538,295 +264,6 @@ body{background:linear-gradient(180deg,#f4faf7,#eef5f1)!important;color:var(--in
 </head><body>${html}<button onclick="print()">طباعة / PDF</button>
 
 
-
-
-
-<!-- Oskar fixed mobile barcode scanner: stable link + silent sync -->
-<script id="oskar-fixed-mobile-barcode-v5">
-(function(){
-  if(window.__OSKAR_FIXED_MOBILE_BARCODE_V5__) return;
-  window.__OSKAR_FIXED_MOBILE_BARCODE_V5__ = true;
-
-  var APP_KEY = 'supermarket_pos_ar_v1';
-  var ROOT = 'remoteFastScanner';
-  var DIRECT_ROOT = 'oskarMobileBarcode';
-  var receiverTimer = null;
-  var bridgeBusy = false;
-  var processedMemory = null;
-
-  function $(id){ return document.getElementById(id); }
-  function safeText(v){ return String(v == null ? '' : v); }
-  function esc(v){ return safeText(v).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
-  function now(){ return new Date().toISOString(); }
-  function cleanKey(k){ return safeText(k || 'MOMEN-BAC72').replace(/[.#$\[\]\/]/g,'_'); }
-  function isCashier(){ return (window.CFG && CFG.kind === 'cashier') || /الكاشير/i.test(decodeURIComponent(location.pathname)); }
-
-  function getDB(){
-    try{ if(typeof loadDB === 'function') return loadDB(); }catch(e){}
-    try{ return JSON.parse(localStorage.getItem(APP_KEY) || '{}') || {}; }catch(e){ return {}; }
-  }
-  function setGlobalDB(d){
-    try{ DB = d; }catch(e){}
-    try{ window.DB = d; }catch(e){}
-  }
-  function saveLocal(d){
-    d = d || getDB();
-    setGlobalDB(d);
-    try{ if(typeof saveDB === 'function') saveDB(d); else localStorage.setItem(APP_KEY, JSON.stringify(d)); }catch(e){ try{ localStorage.setItem(APP_KEY, JSON.stringify(d)); }catch(x){} }
-    return d;
-  }
-  function companyKey(d){
-    d = d || getDB();
-    d.settings = d.settings || {};
-    var key = d.settings.companyKey || localStorage.getItem('oskar_company_key') || 'MOMEN-BAC72';
-    d.settings.companyKey = key;
-    try{ localStorage.setItem('oskar_company_key', key); }catch(e){}
-    return key;
-  }
-  function root(d){
-    d[ROOT] = d[ROOT] && typeof d[ROOT] === 'object' ? d[ROOT] : {};
-    d[ROOT].events = Array.isArray(d[ROOT].events) ? d[ROOT].events : [];
-    return d[ROOT];
-  }
-  function products(d){ return Array.isArray(d.products) ? d.products.filter(function(p){ return p && !p._deleted && p.active !== 'غير نشط'; }) : []; }
-  function norm(v){ return safeText(v).trim().toLowerCase(); }
-  function findProduct(code){
-    var d = getDB(), c = norm(code);
-    if(!c) return null;
-    var rows = products(d);
-    return rows.find(function(p){
-      return [p.barcode, p.sku, p.code, p.itemCode, p.productCode].some(function(x){ return norm(x) === c; });
-    }) || null;
-  }
-  function setBarcodeField(code){
-    var input = $('productSearch');
-    if(input){
-      input.value = safeText(code);
-      try{ input.dispatchEvent(new Event('input',{bubbles:true})); }catch(e){}
-    }
-  }
-  function playTone(kind){
-    try{ if(navigator.vibrate) navigator.vibrate(kind === 'bad' ? 120 : 35); }catch(e){}
-    try{
-      var C = window.AudioContext || window.webkitAudioContext;
-      if(!C) return;
-      var ctx = window.__oskarBeepCtx || (window.__oskarBeepCtx = new C());
-      if(ctx.state === 'suspended') ctx.resume();
-      var o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = 'sine';
-      o.frequency.value = kind === 'bad' ? 220 : 1040;
-      g.gain.setValueAtTime(0.001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + 0.012);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
-      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.12);
-    }catch(e){}
-  }
-  function addToCartByProduct(p){
-    if(!p) return false;
-    try{
-      var arr;
-      try{ arr = cart; }catch(e){ arr = window.cart; }
-      if(!Array.isArray(arr)) arr = [];
-      var line = arr.find(function(i){ return i && i.productId === p.id; });
-      if(line){
-        line.qty = Number(line.qty || 0) + 1;
-        if(typeof renderCart === 'function') renderCart();
-      }else if(typeof addProductToCart === 'function'){
-        addProductToCart(p.id);
-      }else{
-        return false;
-      }
-      return true;
-    }catch(e){ console.warn(e); return false; }
-  }
-  function addBarcode(code){
-    setBarcodeField(code);
-    var p = findProduct(code);
-    if(!p && typeof productSearch === 'function'){
-      try{
-        var rows = productSearch(code) || [];
-        var c = norm(code);
-        p = rows.find(function(x){ return [x.barcode,x.sku,x.code,x.itemCode,x.productCode].some(function(v){return norm(v)===c;}); }) || rows[0] || null;
-      }catch(e){}
-    }
-    if(!p){ playTone('bad'); return {ok:false, message:'لم يتم العثور على الصنف'}; }
-    var ok = addToCartByProduct(p);
-    playTone(ok ? 'ok' : 'bad');
-    return {ok:ok, product:p};
-  }
-  function doneSet(){
-    if(processedMemory) return processedMemory;
-    try{ processedMemory = new Set(JSON.parse(localStorage.getItem('oskar_mobile_barcode_done') || '[]')); }catch(e){ processedMemory = new Set(); }
-    return processedMemory;
-  }
-  function remember(id){
-    var s = doneSet(); s.add(id);
-    var a = Array.from(s).slice(-1200);
-    processedMemory = new Set(a);
-    try{ localStorage.setItem('oskar_mobile_barcode_done', JSON.stringify(a)); }catch(e){}
-  }
-  function processEvent(ev, markRemote){
-    if(!ev || !ev.id || ev.status !== 'pending') return;
-    if(doneSet().has(ev.id)){ if(markRemote) markRemote('added'); return; }
-    var res = addBarcode(ev.code || ev.barcode || '');
-    remember(ev.id);
-    if(markRemote){ markRemote(res.ok ? 'added' : 'not_found', res); }
-    var status = $('mobileBarcodeStatus');
-    if(status) status.textContent = res.ok ? ('تمت إضافة: ' + (res.product && res.product.name ? res.product.name : ev.code)) : ('باركود غير موجود: ' + (ev.code || ''));
-  }
-
-  async function silentPush(d){
-    d = saveLocal(d || getDB());
-    if(!navigator.onLine || !window.FirebaseBridge) return d;
-    try{
-      if(typeof FirebaseBridge.pushWithKey === 'function') await FirebaseBridge.pushWithKey(companyKey(d));
-      else if(typeof FirebaseBridge.sync === 'function') d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true});
-    }catch(e){ console.warn(e); }
-    saveLocal(d);
-    return d;
-  }
-  async function silentPull(){
-    var d = getDB(); companyKey(d); saveLocal(d);
-    if(!navigator.onLine || !window.FirebaseBridge || typeof FirebaseBridge.sync !== 'function') return d;
-    try{ d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true}); }catch(e){ console.warn(e); }
-    return saveLocal(d);
-  }
-  async function bridgePoll(){
-    if(bridgeBusy || !isCashier()) return;
-    bridgeBusy = true;
-    try{
-      var d = await silentPull(), r = root(d), changed = false;
-      r.events.forEach(function(ev){
-        if(!ev || ev.status !== 'pending') return;
-        processEvent(ev, function(status,res){
-          ev.status = status;
-          ev.processedAt = now();
-          if(res && res.product){ ev.productId = res.product.id; ev.productName = res.product.name || ''; }
-          changed = true;
-        });
-      });
-      if(r.events.length > 800){ r.events = r.events.slice(-800); changed = true; }
-      if(changed) await silentPush(d);
-    }finally{ bridgeBusy = false; }
-  }
-
-  function directFirebaseAvailable(){ return !!(window.firebase && (typeof firebase.database === 'function' || typeof firebase.firestore === 'function')); }
-  function startDirectListener(){
-    if(window.__oskarDirectBarcodeListenerStarted || !directFirebaseAvailable()) return false;
-    window.__oskarDirectBarcodeListenerStarted = true;
-    var key = cleanKey(companyKey(getDB()));
-    try{
-      if(typeof firebase.database === 'function'){
-        var ref = firebase.database().ref(DIRECT_ROOT + '/' + key + '/events');
-        ref.limitToLast(80).on('child_added', function(snap){
-          var ev = snap.val() || {};
-          processEvent(ev, function(status,res){
-            var upd = {status:status, processedAt:now()};
-            if(res && res.product){ upd.productId = res.product.id; upd.productName = res.product.name || ''; }
-            try{ ref.child(snap.key).update(upd); }catch(e){}
-          });
-        });
-        return true;
-      }
-    }catch(e){ console.warn(e); }
-    try{
-      if(typeof firebase.firestore === 'function'){
-        firebase.firestore().collection(DIRECT_ROOT).doc(key).collection('events').where('status','==','pending').onSnapshot(function(qs){
-          qs.docChanges().forEach(function(ch){
-            if(ch.type !== 'added' && ch.type !== 'modified') return;
-            var ev = ch.doc.data() || {}; ev.id = ev.id || ch.doc.id;
-            processEvent(ev, function(status,res){
-              var upd = {status:status, processedAt:now()};
-              if(res && res.product){ upd.productId = res.product.id; upd.productName = res.product.name || ''; }
-              try{ ch.doc.ref.update(upd); }catch(e){}
-            });
-          });
-        });
-        return true;
-      }
-    }catch(e){ console.warn(e); }
-    return false;
-  }
-  function startReceiver(){
-    if(!isCashier()) return;
-    startDirectListener();
-    if(!receiverTimer){ bridgePoll(); receiverTimer = setInterval(bridgePoll, 700); }
-  }
-
-  function cameraLink(){
-    var u = new URL('كاميرا-الكاشير.html', location.href);
-    u.searchParams.set('companyKey', companyKey(getDB()));
-    return u.toString();
-  }
-  function drawQR(link){
-    var box = $('mobileBarcodeQr');
-    if(!box) return;
-    box.innerHTML = '<img alt="QR" style="width:220px;height:220px;border-radius:16px" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(link) + '">';
-  }
-  function openModal(){
-    var old = $('mobileBarcodeModal'); if(old) old.remove();
-    var link = cameraLink();
-    var div = document.createElement('div');
-    div.id = 'mobileBarcodeModal';
-    div.className = 'mobile-barcode-modal-back';
-    div.innerHTML = '<div class="mobile-barcode-modal"><div class="mobile-barcode-head"><h3>قارئ باركود الجوال</h3><button type="button" class="btn small danger" id="mobileBarcodeClose">×</button></div><div class="mobile-barcode-grid"><div><div id="mobileBarcodeQr" class="mobile-barcode-qr">QR</div><div id="mobileBarcodeStatus" class="mobile-barcode-status">جاهز للاستقبال</div></div><div><p class="muted">امسح هذا الكود بالجوال. الرابط ثابت ويفتح كاميرا الباركود فقط.</p><label class="mobile-barcode-label">الرابط الثابت</label><textarea readonly id="mobileBarcodeLink"></textarea><div class="tools" style="margin-top:10px"><button type="button" class="btn success" id="mobileBarcodeCopy">نسخ الرابط</button></div><div class="mobile-barcode-help">ارفع ملف <b>كاميرا-الكاشير.html</b> بجانب ملف الكاشير، وافتحه من HTTPS حتى تعمل الكاميرا.</div></div></div></div>';
-    document.body.appendChild(div);
-    $('mobileBarcodeLink').value = link;
-    drawQR(link);
-    $('mobileBarcodeClose').onclick = function(){ div.remove(); };
-    div.addEventListener('click',function(e){ if(e.target === div) div.remove(); });
-    $('mobileBarcodeCopy').onclick = function(){ try{ navigator.clipboard.writeText(link); }catch(e){} if(window.toast) toast('تم نسخ الرابط'); };
-    startReceiver();
-  }
-  function injectButton(){
-    if(!isCashier()) return;
-    var input = $('productSearch');
-    if(!input || $('mobileBarcodeButton')) return;
-    var toolbar = input.closest('.table-toolbar') || input.parentElement;
-    if(!toolbar) return;
-    var btn = document.createElement('button');
-    btn.id = 'mobileBarcodeButton';
-    btn.type = 'button';
-    btn.className = 'btn ghost mobile-barcode-button';
-    btn.innerHTML = '<span style="font-size:18px">▥</span><span>جوال</span>';
-    btn.onclick = openModal;
-    toolbar.appendChild(btn);
-    startReceiver();
-  }
-
-  function installSilentSync(){
-    var css = document.createElement('style');
-    css.id = 'oskar-mobile-barcode-style';
-    css.textContent = '.syncing{animation:none!important;transform:none!important}.top-actions button[onclick*="syncNow"]{transition:none!important}.mobile-barcode-button{white-space:nowrap}.mobile-barcode-modal-back{position:fixed;inset:0;background:rgba(15,23,42,.66);backdrop-filter:blur(7px);z-index:980;display:flex;align-items:flex-start;justify-content:center;padding:42px 12px;overflow:auto}.mobile-barcode-modal{width:min(780px,96vw);background:#fff;border-radius:26px;padding:16px;box-shadow:0 30px 80px rgba(0,0,0,.28)}.mobile-barcode-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5eee8;padding-bottom:10px;margin-bottom:12px}.mobile-barcode-head h3{margin:0;font-size:20px;font-weight:950}.mobile-barcode-grid{display:grid;grid-template-columns:250px 1fr;gap:18px}.mobile-barcode-qr{width:240px;height:240px;border:1px solid #d8e8e1;border-radius:22px;background:#f8fffb;display:flex;align-items:center;justify-content:center;padding:10px}.mobile-barcode-status{margin-top:10px;background:#dcfce7;color:#166534;padding:8px 10px;border-radius:999px;text-align:center;font-weight:900}.mobile-barcode-label{display:block;font-weight:950;margin-bottom:6px}.mobile-barcode-modal textarea{width:100%;min-height:96px;direction:ltr;text-align:left;font-size:12px}.mobile-barcode-help{margin-top:10px;color:#64748b;font-size:13px;font-weight:800}@media(max-width:680px){.mobile-barcode-grid{grid-template-columns:1fr}.mobile-barcode-qr{margin:auto}}';
-    document.head.appendChild(css);
-    window.syncNow = async function(show){
-      var d = getDB();
-      if(!navigator.onLine){ return d; }
-      try{
-        if(window.FirebaseBridge && typeof FirebaseBridge.sync === 'function'){
-          d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true});
-          saveLocal(d);
-        }
-      }catch(e){ console.warn(e); }
-      try{ var b = $('syncState'); if(b) b.textContent = navigator.onLine ? 'متصل' : 'بدون نت'; }catch(e){}
-      return d;
-    };
-    try{ syncNow = window.syncNow; }catch(e){}
-  }
-
-  var oldRenderCashier = window.renderCashier;
-  if(typeof oldRenderCashier === 'function' && !oldRenderCashier.__mobileBarcodeWrapped){
-    var wrapped = function(){ var r = oldRenderCashier.apply(this, arguments); setTimeout(injectButton, 0); setTimeout(startReceiver, 80); return r; };
-    wrapped.__mobileBarcodeWrapped = true;
-    window.renderCashier = wrapped;
-    try{ renderCashier = wrapped; }catch(e){}
-  }
-
-  installSilentSync();
-  document.addEventListener('DOMContentLoaded', function(){ setTimeout(injectButton, 120); setTimeout(startReceiver, 180); });
-  if(document.readyState !== 'loading'){ setTimeout(injectButton, 120); setTimeout(startReceiver, 180); }
-})();
-</script>
 
 </body></html>`);w.document.close()}
 function invoiceHTML(rec){let rows=(rec.items||[]).map(i=>`<tr><td>${i.name}<br><small>${i.unit||''}</small></td><td>${i.qty}</td><td>${money2(i.unitPrice)}</td><td>${money2(i.total)}</td></tr>`).join('');return `<div class="invoice-preview" id="invoice-${rec.id}"><h2>${DB.settings.storeName||'كاشير أوسكار'}</h2><div>رقم: ${rec.invoiceNo}</div><div>التاريخ: ${rec.date}</div><div>العميل: ${rec.customerName||'زبون نقدي'}</div><table><thead><tr><th>الصنف</th><th>كمية</th><th>سعر</th><th>مجموع</th></tr></thead><tbody>${rows}</tbody></table><div class="total">الإجمالي: ${money2(rec.total)}</div><div>المدفوع: ${money2(rec.paid)} - المستحق: ${money2(rec.due)}</div></div>`}
@@ -962,296 +399,7 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
   window.toggleCartonProductFields=function(){ const is=$('prodUnit')&&$('prodUnit').value==='كرتونة'; if($('cartonProductBox'))$('cartonProductBox').classList.toggle('hide',!is); if($('unitProductBox'))$('unitProductBox').classList.toggle('hide',is); calcProductUnitPrices(); };
   window.calcProductUnitPrices=function(){ const size=safe($('cartonSize')&&$('cartonSize').value)||1; if($('unitPurchasePrice'))$('unitPurchasePrice').value=(safe($('cartonPurchasePrice')&&$('cartonPurchasePrice').value)/size).toFixed(3); if($('unitSalePrice'))$('unitSalePrice').value=(safe($('cartonSalePrice')&&$('cartonSalePrice').value)/size).toFixed(3); };
   window.saveProductFinal=function(){ const f=$('productFinalForm'); if(!f)return; const d=Object.fromEntries(new FormData(f).entries()); d.id=(window.uid?uid('prd'):'prd-'+Date.now()); d.createdAt=(window.nowText?nowText():new Date().toLocaleString()); d.createdBy=(cur().name||'مدير'); d.stock=safe(d.stock); if(d.unit==='كرتونة'){d.cartonSize=safe(d.cartonSize)||1;d.unitsPerCarton=d.cartonSize;d.cartonPurchasePrice=safe(d.cartonPurchasePrice);d.cartonSalePrice=safe(d.cartonSalePrice);d.unitPurchasePrice=safe(d.unitPurchasePrice);d.unitSalePrice=safe(d.unitSalePrice);d.purchasePrice=d.unitPurchasePrice;d.salePrice=d.unitSalePrice}else{d.purchasePrice=safe(d.purchasePrice);d.salePrice=safe(d.salePrice);d.unitPurchasePrice=d.purchasePrice;d.unitSalePrice=d.salePrice} arr('products').unshift(d); if(window.logAction)logAction('إضافة','صنف',d.name); persist2(); toast2('تم حفظ الصنف'); f.reset(); toggleCartonProductFields(); };
-  function printInvoice2(rec){ if(!rec)return; const rows=(rec.items||[]).map(i=>'<tr><td>'+i.name+'</td><td>'+i.qty+' '+(i.unit||'')+'</td><td>'+mon(i.unitPrice)+'</td><td>'+mon(i.total)+'</td></tr>').join(''); const html='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة</title><style>body{font-family:Tajawal,Arial;margin:0;background:#fff;color:#111}.receipt{width:80mm;margin:auto;padding:8px}.head{text-align:center;border-bottom:1px dashed #111;padding-bottom:8px}.store{font-size:22px;font-weight:900}.meta{font-size:12px;line-height:1.8}table{width:100%;border-collapse:collapse;font-size:12px}th,td{border-bottom:1px dashed #aaa;padding:5px 2px;text-align:right}.total{font-size:18px;font-weight:900;border-top:2px solid #111;margin-top:8px;padding-top:8px}.thanks{text-align:center;margin-top:12px;font-size:12px}@media print{button{display:none}.receipt{width:80mm}}</style></head><body><div class="receipt"><div class="head"><div class="store">'+((window.DB&&DB.settings&&DB.settings.storeName)||'كاشير أوسكار')+'</div><div class="meta">فاتورة رقم: '+(rec.invoiceNo||rec.id||'')+'<br>التاريخ: '+(rec.date||'')+'<br>العميل: '+(rec.customerName||'زبون نقدي')+'</div></div><table><thead><tr><th>الصنف</th><th>كمية</th><th>سعر</th><th>مجموع</th></tr></thead><tbody>'+rows+'</tbody></table><div class="total">الإجمالي: '+mon(rec.total)+'</div><div class="meta">المدفوع: '+mon(rec.paid)+'<br>المستحق: '+mon(rec.due)+'</div><div class="thanks">شكراً لتسوقكم</div><button onclick="print()">طباعة / PDF</button></div>
-
-<!-- Oskar fixed mobile barcode scanner: stable link + silent sync -->
-<script id="oskar-fixed-mobile-barcode-v5">
-(function(){
-  if(window.__OSKAR_FIXED_MOBILE_BARCODE_V5__) return;
-  window.__OSKAR_FIXED_MOBILE_BARCODE_V5__ = true;
-
-  var APP_KEY = 'supermarket_pos_ar_v1';
-  var ROOT = 'remoteFastScanner';
-  var DIRECT_ROOT = 'oskarMobileBarcode';
-  var receiverTimer = null;
-  var bridgeBusy = false;
-  var processedMemory = null;
-
-  function $(id){ return document.getElementById(id); }
-  function safeText(v){ return String(v == null ? '' : v); }
-  function esc(v){ return safeText(v).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
-  function now(){ return new Date().toISOString(); }
-  function cleanKey(k){ return safeText(k || 'MOMEN-BAC72').replace(/[.#$\[\]\/]/g,'_'); }
-  function isCashier(){ return (window.CFG && CFG.kind === 'cashier') || /الكاشير/i.test(decodeURIComponent(location.pathname)); }
-
-  function getDB(){
-    try{ if(typeof loadDB === 'function') return loadDB(); }catch(e){}
-    try{ return JSON.parse(localStorage.getItem(APP_KEY) || '{}') || {}; }catch(e){ return {}; }
-  }
-  function setGlobalDB(d){
-    try{ DB = d; }catch(e){}
-    try{ window.DB = d; }catch(e){}
-  }
-  function saveLocal(d){
-    d = d || getDB();
-    setGlobalDB(d);
-    try{ if(typeof saveDB === 'function') saveDB(d); else localStorage.setItem(APP_KEY, JSON.stringify(d)); }catch(e){ try{ localStorage.setItem(APP_KEY, JSON.stringify(d)); }catch(x){} }
-    return d;
-  }
-  function companyKey(d){
-    d = d || getDB();
-    d.settings = d.settings || {};
-    var key = d.settings.companyKey || localStorage.getItem('oskar_company_key') || 'MOMEN-BAC72';
-    d.settings.companyKey = key;
-    try{ localStorage.setItem('oskar_company_key', key); }catch(e){}
-    return key;
-  }
-  function root(d){
-    d[ROOT] = d[ROOT] && typeof d[ROOT] === 'object' ? d[ROOT] : {};
-    d[ROOT].events = Array.isArray(d[ROOT].events) ? d[ROOT].events : [];
-    return d[ROOT];
-  }
-  function products(d){ return Array.isArray(d.products) ? d.products.filter(function(p){ return p && !p._deleted && p.active !== 'غير نشط'; }) : []; }
-  function norm(v){ return safeText(v).trim().toLowerCase(); }
-  function findProduct(code){
-    var d = getDB(), c = norm(code);
-    if(!c) return null;
-    var rows = products(d);
-    return rows.find(function(p){
-      return [p.barcode, p.sku, p.code, p.itemCode, p.productCode].some(function(x){ return norm(x) === c; });
-    }) || null;
-  }
-  function setBarcodeField(code){
-    var input = $('productSearch');
-    if(input){
-      input.value = safeText(code);
-      try{ input.dispatchEvent(new Event('input',{bubbles:true})); }catch(e){}
-    }
-  }
-  function playTone(kind){
-    try{ if(navigator.vibrate) navigator.vibrate(kind === 'bad' ? 120 : 35); }catch(e){}
-    try{
-      var C = window.AudioContext || window.webkitAudioContext;
-      if(!C) return;
-      var ctx = window.__oskarBeepCtx || (window.__oskarBeepCtx = new C());
-      if(ctx.state === 'suspended') ctx.resume();
-      var o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = 'sine';
-      o.frequency.value = kind === 'bad' ? 220 : 1040;
-      g.gain.setValueAtTime(0.001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + 0.012);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
-      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.12);
-    }catch(e){}
-  }
-  function addToCartByProduct(p){
-    if(!p) return false;
-    try{
-      var arr;
-      try{ arr = cart; }catch(e){ arr = window.cart; }
-      if(!Array.isArray(arr)) arr = [];
-      var line = arr.find(function(i){ return i && i.productId === p.id; });
-      if(line){
-        line.qty = Number(line.qty || 0) + 1;
-        if(typeof renderCart === 'function') renderCart();
-      }else if(typeof addProductToCart === 'function'){
-        addProductToCart(p.id);
-      }else{
-        return false;
-      }
-      return true;
-    }catch(e){ console.warn(e); return false; }
-  }
-  function addBarcode(code){
-    setBarcodeField(code);
-    var p = findProduct(code);
-    if(!p && typeof productSearch === 'function'){
-      try{
-        var rows = productSearch(code) || [];
-        var c = norm(code);
-        p = rows.find(function(x){ return [x.barcode,x.sku,x.code,x.itemCode,x.productCode].some(function(v){return norm(v)===c;}); }) || rows[0] || null;
-      }catch(e){}
-    }
-    if(!p){ playTone('bad'); return {ok:false, message:'لم يتم العثور على الصنف'}; }
-    var ok = addToCartByProduct(p);
-    playTone(ok ? 'ok' : 'bad');
-    return {ok:ok, product:p};
-  }
-  function doneSet(){
-    if(processedMemory) return processedMemory;
-    try{ processedMemory = new Set(JSON.parse(localStorage.getItem('oskar_mobile_barcode_done') || '[]')); }catch(e){ processedMemory = new Set(); }
-    return processedMemory;
-  }
-  function remember(id){
-    var s = doneSet(); s.add(id);
-    var a = Array.from(s).slice(-1200);
-    processedMemory = new Set(a);
-    try{ localStorage.setItem('oskar_mobile_barcode_done', JSON.stringify(a)); }catch(e){}
-  }
-  function processEvent(ev, markRemote){
-    if(!ev || !ev.id || ev.status !== 'pending') return;
-    if(doneSet().has(ev.id)){ if(markRemote) markRemote('added'); return; }
-    var res = addBarcode(ev.code || ev.barcode || '');
-    remember(ev.id);
-    if(markRemote){ markRemote(res.ok ? 'added' : 'not_found', res); }
-    var status = $('mobileBarcodeStatus');
-    if(status) status.textContent = res.ok ? ('تمت إضافة: ' + (res.product && res.product.name ? res.product.name : ev.code)) : ('باركود غير موجود: ' + (ev.code || ''));
-  }
-
-  async function silentPush(d){
-    d = saveLocal(d || getDB());
-    if(!navigator.onLine || !window.FirebaseBridge) return d;
-    try{
-      if(typeof FirebaseBridge.pushWithKey === 'function') await FirebaseBridge.pushWithKey(companyKey(d));
-      else if(typeof FirebaseBridge.sync === 'function') d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true});
-    }catch(e){ console.warn(e); }
-    saveLocal(d);
-    return d;
-  }
-  async function silentPull(){
-    var d = getDB(); companyKey(d); saveLocal(d);
-    if(!navigator.onLine || !window.FirebaseBridge || typeof FirebaseBridge.sync !== 'function') return d;
-    try{ d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true}); }catch(e){ console.warn(e); }
-    return saveLocal(d);
-  }
-  async function bridgePoll(){
-    if(bridgeBusy || !isCashier()) return;
-    bridgeBusy = true;
-    try{
-      var d = await silentPull(), r = root(d), changed = false;
-      r.events.forEach(function(ev){
-        if(!ev || ev.status !== 'pending') return;
-        processEvent(ev, function(status,res){
-          ev.status = status;
-          ev.processedAt = now();
-          if(res && res.product){ ev.productId = res.product.id; ev.productName = res.product.name || ''; }
-          changed = true;
-        });
-      });
-      if(r.events.length > 800){ r.events = r.events.slice(-800); changed = true; }
-      if(changed) await silentPush(d);
-    }finally{ bridgeBusy = false; }
-  }
-
-  function directFirebaseAvailable(){ return !!(window.firebase && (typeof firebase.database === 'function' || typeof firebase.firestore === 'function')); }
-  function startDirectListener(){
-    if(window.__oskarDirectBarcodeListenerStarted || !directFirebaseAvailable()) return false;
-    window.__oskarDirectBarcodeListenerStarted = true;
-    var key = cleanKey(companyKey(getDB()));
-    try{
-      if(typeof firebase.database === 'function'){
-        var ref = firebase.database().ref(DIRECT_ROOT + '/' + key + '/events');
-        ref.limitToLast(80).on('child_added', function(snap){
-          var ev = snap.val() || {};
-          processEvent(ev, function(status,res){
-            var upd = {status:status, processedAt:now()};
-            if(res && res.product){ upd.productId = res.product.id; upd.productName = res.product.name || ''; }
-            try{ ref.child(snap.key).update(upd); }catch(e){}
-          });
-        });
-        return true;
-      }
-    }catch(e){ console.warn(e); }
-    try{
-      if(typeof firebase.firestore === 'function'){
-        firebase.firestore().collection(DIRECT_ROOT).doc(key).collection('events').where('status','==','pending').onSnapshot(function(qs){
-          qs.docChanges().forEach(function(ch){
-            if(ch.type !== 'added' && ch.type !== 'modified') return;
-            var ev = ch.doc.data() || {}; ev.id = ev.id || ch.doc.id;
-            processEvent(ev, function(status,res){
-              var upd = {status:status, processedAt:now()};
-              if(res && res.product){ upd.productId = res.product.id; upd.productName = res.product.name || ''; }
-              try{ ch.doc.ref.update(upd); }catch(e){}
-            });
-          });
-        });
-        return true;
-      }
-    }catch(e){ console.warn(e); }
-    return false;
-  }
-  function startReceiver(){
-    if(!isCashier()) return;
-    startDirectListener();
-    if(!receiverTimer){ bridgePoll(); receiverTimer = setInterval(bridgePoll, 700); }
-  }
-
-  function cameraLink(){
-    var u = new URL('كاميرا-الكاشير.html', location.href);
-    u.searchParams.set('companyKey', companyKey(getDB()));
-    return u.toString();
-  }
-  function drawQR(link){
-    var box = $('mobileBarcodeQr');
-    if(!box) return;
-    box.innerHTML = '<img alt="QR" style="width:220px;height:220px;border-radius:16px" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(link) + '">';
-  }
-  function openModal(){
-    var old = $('mobileBarcodeModal'); if(old) old.remove();
-    var link = cameraLink();
-    var div = document.createElement('div');
-    div.id = 'mobileBarcodeModal';
-    div.className = 'mobile-barcode-modal-back';
-    div.innerHTML = '<div class="mobile-barcode-modal"><div class="mobile-barcode-head"><h3>قارئ باركود الجوال</h3><button type="button" class="btn small danger" id="mobileBarcodeClose">×</button></div><div class="mobile-barcode-grid"><div><div id="mobileBarcodeQr" class="mobile-barcode-qr">QR</div><div id="mobileBarcodeStatus" class="mobile-barcode-status">جاهز للاستقبال</div></div><div><p class="muted">امسح هذا الكود بالجوال. الرابط ثابت ويفتح كاميرا الباركود فقط.</p><label class="mobile-barcode-label">الرابط الثابت</label><textarea readonly id="mobileBarcodeLink"></textarea><div class="tools" style="margin-top:10px"><button type="button" class="btn success" id="mobileBarcodeCopy">نسخ الرابط</button></div><div class="mobile-barcode-help">ارفع ملف <b>كاميرا-الكاشير.html</b> بجانب ملف الكاشير، وافتحه من HTTPS حتى تعمل الكاميرا.</div></div></div></div>';
-    document.body.appendChild(div);
-    $('mobileBarcodeLink').value = link;
-    drawQR(link);
-    $('mobileBarcodeClose').onclick = function(){ div.remove(); };
-    div.addEventListener('click',function(e){ if(e.target === div) div.remove(); });
-    $('mobileBarcodeCopy').onclick = function(){ try{ navigator.clipboard.writeText(link); }catch(e){} if(window.toast) toast('تم نسخ الرابط'); };
-    startReceiver();
-  }
-  function injectButton(){
-    if(!isCashier()) return;
-    var input = $('productSearch');
-    if(!input || $('mobileBarcodeButton')) return;
-    var toolbar = input.closest('.table-toolbar') || input.parentElement;
-    if(!toolbar) return;
-    var btn = document.createElement('button');
-    btn.id = 'mobileBarcodeButton';
-    btn.type = 'button';
-    btn.className = 'btn ghost mobile-barcode-button';
-    btn.innerHTML = '<span style="font-size:18px">▥</span><span>جوال</span>';
-    btn.onclick = openModal;
-    toolbar.appendChild(btn);
-    startReceiver();
-  }
-
-  function installSilentSync(){
-    var css = document.createElement('style');
-    css.id = 'oskar-mobile-barcode-style';
-    css.textContent = '.syncing{animation:none!important;transform:none!important}.top-actions button[onclick*="syncNow"]{transition:none!important}.mobile-barcode-button{white-space:nowrap}.mobile-barcode-modal-back{position:fixed;inset:0;background:rgba(15,23,42,.66);backdrop-filter:blur(7px);z-index:980;display:flex;align-items:flex-start;justify-content:center;padding:42px 12px;overflow:auto}.mobile-barcode-modal{width:min(780px,96vw);background:#fff;border-radius:26px;padding:16px;box-shadow:0 30px 80px rgba(0,0,0,.28)}.mobile-barcode-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5eee8;padding-bottom:10px;margin-bottom:12px}.mobile-barcode-head h3{margin:0;font-size:20px;font-weight:950}.mobile-barcode-grid{display:grid;grid-template-columns:250px 1fr;gap:18px}.mobile-barcode-qr{width:240px;height:240px;border:1px solid #d8e8e1;border-radius:22px;background:#f8fffb;display:flex;align-items:center;justify-content:center;padding:10px}.mobile-barcode-status{margin-top:10px;background:#dcfce7;color:#166534;padding:8px 10px;border-radius:999px;text-align:center;font-weight:900}.mobile-barcode-label{display:block;font-weight:950;margin-bottom:6px}.mobile-barcode-modal textarea{width:100%;min-height:96px;direction:ltr;text-align:left;font-size:12px}.mobile-barcode-help{margin-top:10px;color:#64748b;font-size:13px;font-weight:800}@media(max-width:680px){.mobile-barcode-grid{grid-template-columns:1fr}.mobile-barcode-qr{margin:auto}}';
-    document.head.appendChild(css);
-    window.syncNow = async function(show){
-      var d = getDB();
-      if(!navigator.onLine){ return d; }
-      try{
-        if(window.FirebaseBridge && typeof FirebaseBridge.sync === 'function'){
-          d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true});
-          saveLocal(d);
-        }
-      }catch(e){ console.warn(e); }
-      try{ var b = $('syncState'); if(b) b.textContent = navigator.onLine ? 'متصل' : 'بدون نت'; }catch(e){}
-      return d;
-    };
-    try{ syncNow = window.syncNow; }catch(e){}
-  }
-
-  var oldRenderCashier = window.renderCashier;
-  if(typeof oldRenderCashier === 'function' && !oldRenderCashier.__mobileBarcodeWrapped){
-    var wrapped = function(){ var r = oldRenderCashier.apply(this, arguments); setTimeout(injectButton, 0); setTimeout(startReceiver, 80); return r; };
-    wrapped.__mobileBarcodeWrapped = true;
-    window.renderCashier = wrapped;
-    try{ renderCashier = wrapped; }catch(e){}
-  }
-
-  installSilentSync();
-  document.addEventListener('DOMContentLoaded', function(){ setTimeout(injectButton, 120); setTimeout(startReceiver, 180); });
-  if(document.readyState !== 'loading'){ setTimeout(injectButton, 120); setTimeout(startReceiver, 180); }
-})();
-</script>
-
-</body></html>'; const w=window.open('','_blank'); if(w){w.document.write(html);w.document.close();setTimeout(()=>w.print(),350);} }
+  function printInvoice2(rec){ if(!rec)return; const rows=(rec.items||[]).map(i=>'<tr><td>'+i.name+'</td><td>'+i.qty+' '+(i.unit||'')+'</td><td>'+mon(i.unitPrice)+'</td><td>'+mon(i.total)+'</td></tr>').join(''); const html='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة</title><style>body{font-family:Tajawal,Arial;margin:0;background:#fff;color:#111}.receipt{width:80mm;margin:auto;padding:8px}.head{text-align:center;border-bottom:1px dashed #111;padding-bottom:8px}.store{font-size:22px;font-weight:900}.meta{font-size:12px;line-height:1.8}table{width:100%;border-collapse:collapse;font-size:12px}th,td{border-bottom:1px dashed #aaa;padding:5px 2px;text-align:right}.total{font-size:18px;font-weight:900;border-top:2px solid #111;margin-top:8px;padding-top:8px}.thanks{text-align:center;margin-top:12px;font-size:12px}@media print{button{display:none}.receipt{width:80mm}}</style></head><body><div class="receipt"><div class="head"><div class="store">'+((window.DB&&DB.settings&&DB.settings.storeName)||'كاشير أوسكار')+'</div><div class="meta">فاتورة رقم: '+(rec.invoiceNo||rec.id||'')+'<br>التاريخ: '+(rec.date||'')+'<br>العميل: '+(rec.customerName||'زبون نقدي')+'</div></div><table><thead><tr><th>الصنف</th><th>كمية</th><th>سعر</th><th>مجموع</th></tr></thead><tbody>'+rows+'</tbody></table><div class="total">الإجمالي: '+mon(rec.total)+'</div><div class="meta">المدفوع: '+mon(rec.paid)+'<br>المستحق: '+mon(rec.due)+'</div><div class="thanks">شكراً لتسوقكم</div><button onclick="print()">طباعة / PDF</button></div></body></html>'; const w=window.open('','_blank'); if(w){w.document.write(html);w.document.close();setTimeout(()=>w.print(),350);} }
   window.printInvoice=printInvoice2;
   const oldRenderPage=window.renderPage; window.renderPage=function(){ installUI(); const fname=window.CFG&&CFG.filename; const coll=window.CFG&&CFG.collection; if(fname==='العملاء.html'||coll==='customers') return renderCustomersFinal(); if(fname==='تقرير-الأرباح.html') return renderProfitFinal(); if(fname==='إضافة-صنف.html') return renderProductForm(); return oldRenderPage?oldRenderPage():null; };
   document.addEventListener('DOMContentLoaded',function(){ installUI(); setTimeout(()=>{if(window.renderPage)try{renderPage()}catch(e){console.error(e);}},50); }); if(document.readyState!=='loading') setTimeout(()=>{installUI(); if(window.renderPage)try{renderPage()}catch(e){console.error(e);}},30);
@@ -1428,292 +576,301 @@ window.renderPage = function(){ensureModernData();let k=CFG.kind;if(k==='invoice
 
 
 
-<!-- Oskar fixed mobile barcode scanner: stable link + silent sync -->
-<script id="oskar-fixed-mobile-barcode-v5">
+<script id="oskar-mobile-barcode-final-script">
 (function(){
-  if(window.__OSKAR_FIXED_MOBILE_BARCODE_V5__) return;
-  window.__OSKAR_FIXED_MOBILE_BARCODE_V5__ = true;
+  if(window.__OSKAR_MOBILE_BARCODE_FINAL__) return;
+  window.__OSKAR_MOBILE_BARCODE_FINAL__ = true;
 
   var APP_KEY = 'supermarket_pos_ar_v1';
-  var ROOT = 'remoteFastScanner';
-  var DIRECT_ROOT = 'oskarMobileBarcode';
-  var receiverTimer = null;
-  var bridgeBusy = false;
-  var processedMemory = null;
+  var QUEUE_KEY = 'mobileBarcodeQueue';
+  var DEFAULT_COMPANY_KEY = 'MOMEN-BAC72';
+  var receiverStarted = false;
+  var receiverBusy = false;
+  var lastPollAt = 0;
+  var lastBridgeSyncTouch = 0;
+  var processed = loadProcessed();
 
   function $(id){ return document.getElementById(id); }
-  function safeText(v){ return String(v == null ? '' : v); }
-  function esc(v){ return safeText(v).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
-  function now(){ return new Date().toISOString(); }
-  function cleanKey(k){ return safeText(k || 'MOMEN-BAC72').replace(/[.#$\[\]\/]/g,'_'); }
-  function isCashier(){ return (window.CFG && CFG.kind === 'cashier') || /الكاشير/i.test(decodeURIComponent(location.pathname)); }
-
   function getDB(){
-    try{ if(typeof loadDB === 'function') return loadDB(); }catch(e){}
-    try{ return JSON.parse(localStorage.getItem(APP_KEY) || '{}') || {}; }catch(e){ return {}; }
-  }
-  function setGlobalDB(d){
-    try{ DB = d; }catch(e){}
-    try{ window.DB = d; }catch(e){}
+    try{
+      if(window.DB && typeof window.DB === 'object') return window.DB;
+      var raw = localStorage.getItem(APP_KEY);
+      window.DB = raw ? JSON.parse(raw) : {};
+      return window.DB;
+    }catch(e){ window.DB = {}; return window.DB; }
   }
   function saveLocal(d){
-    d = d || getDB();
-    setGlobalDB(d);
-    try{ if(typeof saveDB === 'function') saveDB(d); else localStorage.setItem(APP_KEY, JSON.stringify(d)); }catch(e){ try{ localStorage.setItem(APP_KEY, JSON.stringify(d)); }catch(x){} }
-    return d;
+    try{ window.DB = d || getDB(); localStorage.setItem(APP_KEY, JSON.stringify(window.DB)); }catch(e){}
   }
   function companyKey(d){
-    d = d || getDB();
-    d.settings = d.settings || {};
-    var key = d.settings.companyKey || localStorage.getItem('oskar_company_key') || 'MOMEN-BAC72';
-    d.settings.companyKey = key;
-    try{ localStorage.setItem('oskar_company_key', key); }catch(e){}
-    return key;
+    d = d || getDB(); d.settings = d.settings || {};
+    if(!d.settings.companyKey) d.settings.companyKey = DEFAULT_COMPANY_KEY;
+    return d.settings.companyKey;
   }
-  function root(d){
-    d[ROOT] = d[ROOT] && typeof d[ROOT] === 'object' ? d[ROOT] : {};
-    d[ROOT].events = Array.isArray(d[ROOT].events) ? d[ROOT].events : [];
-    return d[ROOT];
-  }
-  function products(d){ return Array.isArray(d.products) ? d.products.filter(function(p){ return p && !p._deleted && p.active !== 'غير نشط'; }) : []; }
-  function norm(v){ return safeText(v).trim().toLowerCase(); }
-  function findProduct(code){
-    var d = getDB(), c = norm(code);
-    if(!c) return null;
-    var rows = products(d);
-    return rows.find(function(p){
-      return [p.barcode, p.sku, p.code, p.itemCode, p.productCode].some(function(x){ return norm(x) === c; });
-    }) || null;
-  }
-  function setBarcodeField(code){
-    var input = $('productSearch');
-    if(input){
-      input.value = safeText(code);
-      try{ input.dispatchEvent(new Event('input',{bubbles:true})); }catch(e){}
-    }
-  }
-  function playTone(kind){
-    try{ if(navigator.vibrate) navigator.vibrate(kind === 'bad' ? 120 : 35); }catch(e){}
+  function loadProcessed(){ try{return JSON.parse(localStorage.getItem('oskar_mobile_barcode_done_ids')||'{}')}catch(e){return {}} }
+  function saveProcessed(){
     try{
-      var C = window.AudioContext || window.webkitAudioContext;
-      if(!C) return;
-      var ctx = window.__oskarBeepCtx || (window.__oskarBeepCtx = new C());
-      if(ctx.state === 'suspended') ctx.resume();
-      var o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = 'sine';
-      o.frequency.value = kind === 'bad' ? 220 : 1040;
-      g.gain.setValueAtTime(0.001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + 0.012);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
-      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.12);
+      var keys = Object.keys(processed);
+      if(keys.length > 600){
+        keys.sort(function(a,b){return (processed[b]||0)-(processed[a]||0)}).slice(450).forEach(function(k){delete processed[k]});
+      }
+      localStorage.setItem('oskar_mobile_barcode_done_ids', JSON.stringify(processed));
     }catch(e){}
   }
-  function addToCartByProduct(p){
-    if(!p) return false;
-    try{
-      var arr;
-      try{ arr = cart; }catch(e){ arr = window.cart; }
-      if(!Array.isArray(arr)) arr = [];
-      var line = arr.find(function(i){ return i && i.productId === p.id; });
-      if(line){
-        line.qty = Number(line.qty || 0) + 1;
-        if(typeof renderCart === 'function') renderCart();
-      }else if(typeof addProductToCart === 'function'){
-        addProductToCart(p.id);
-      }else{
-        return false;
-      }
-      return true;
-    }catch(e){ console.warn(e); return false; }
-  }
-  function addBarcode(code){
-    setBarcodeField(code);
-    var p = findProduct(code);
-    if(!p && typeof productSearch === 'function'){
-      try{
-        var rows = productSearch(code) || [];
-        var c = norm(code);
-        p = rows.find(function(x){ return [x.barcode,x.sku,x.code,x.itemCode,x.productCode].some(function(v){return norm(v)===c;}); }) || rows[0] || null;
-      }catch(e){}
-    }
-    if(!p){ playTone('bad'); return {ok:false, message:'لم يتم العثور على الصنف'}; }
-    var ok = addToCartByProduct(p);
-    playTone(ok ? 'ok' : 'bad');
-    return {ok:ok, product:p};
-  }
-  function doneSet(){
-    if(processedMemory) return processedMemory;
-    try{ processedMemory = new Set(JSON.parse(localStorage.getItem('oskar_mobile_barcode_done') || '[]')); }catch(e){ processedMemory = new Set(); }
-    return processedMemory;
-  }
-  function remember(id){
-    var s = doneSet(); s.add(id);
-    var a = Array.from(s).slice(-1200);
-    processedMemory = new Set(a);
-    try{ localStorage.setItem('oskar_mobile_barcode_done', JSON.stringify(a)); }catch(e){}
-  }
-  function processEvent(ev, markRemote){
-    if(!ev || !ev.id || ev.status !== 'pending') return;
-    if(doneSet().has(ev.id)){ if(markRemote) markRemote('added'); return; }
-    var res = addBarcode(ev.code || ev.barcode || '');
-    remember(ev.id);
-    if(markRemote){ markRemote(res.ok ? 'added' : 'not_found', res); }
-    var status = $('mobileBarcodeStatus');
-    if(status) status.textContent = res.ok ? ('تمت إضافة: ' + (res.product && res.product.name ? res.product.name : ev.code)) : ('باركود غير موجود: ' + (ev.code || ''));
-  }
-
-  async function silentPush(d){
-    d = saveLocal(d || getDB());
-    if(!navigator.onLine || !window.FirebaseBridge) return d;
-    try{
-      if(typeof FirebaseBridge.pushWithKey === 'function') await FirebaseBridge.pushWithKey(companyKey(d));
-      else if(typeof FirebaseBridge.sync === 'function') d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true});
-    }catch(e){ console.warn(e); }
-    saveLocal(d);
-    return d;
-  }
-  async function silentPull(){
-    var d = getDB(); companyKey(d); saveLocal(d);
-    if(!navigator.onLine || !window.FirebaseBridge || typeof FirebaseBridge.sync !== 'function') return d;
-    try{ d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true}); }catch(e){ console.warn(e); }
-    return saveLocal(d);
-  }
-  async function bridgePoll(){
-    if(bridgeBusy || !isCashier()) return;
-    bridgeBusy = true;
-    try{
-      var d = await silentPull(), r = root(d), changed = false;
-      r.events.forEach(function(ev){
-        if(!ev || ev.status !== 'pending') return;
-        processEvent(ev, function(status,res){
-          ev.status = status;
-          ev.processedAt = now();
-          if(res && res.product){ ev.productId = res.product.id; ev.productName = res.product.name || ''; }
-          changed = true;
-        });
-      });
-      if(r.events.length > 800){ r.events = r.events.slice(-800); changed = true; }
-      if(changed) await silentPush(d);
-    }finally{ bridgeBusy = false; }
-  }
-
-  function directFirebaseAvailable(){ return !!(window.firebase && (typeof firebase.database === 'function' || typeof firebase.firestore === 'function')); }
-  function startDirectListener(){
-    if(window.__oskarDirectBarcodeListenerStarted || !directFirebaseAvailable()) return false;
-    window.__oskarDirectBarcodeListenerStarted = true;
-    var key = cleanKey(companyKey(getDB()));
-    try{
-      if(typeof firebase.database === 'function'){
-        var ref = firebase.database().ref(DIRECT_ROOT + '/' + key + '/events');
-        ref.limitToLast(80).on('child_added', function(snap){
-          var ev = snap.val() || {};
-          processEvent(ev, function(status,res){
-            var upd = {status:status, processedAt:now()};
-            if(res && res.product){ upd.productId = res.product.id; upd.productName = res.product.name || ''; }
-            try{ ref.child(snap.key).update(upd); }catch(e){}
-          });
-        });
-        return true;
-      }
-    }catch(e){ console.warn(e); }
-    try{
-      if(typeof firebase.firestore === 'function'){
-        firebase.firestore().collection(DIRECT_ROOT).doc(key).collection('events').where('status','==','pending').onSnapshot(function(qs){
-          qs.docChanges().forEach(function(ch){
-            if(ch.type !== 'added' && ch.type !== 'modified') return;
-            var ev = ch.doc.data() || {}; ev.id = ev.id || ch.doc.id;
-            processEvent(ev, function(status,res){
-              var upd = {status:status, processedAt:now()};
-              if(res && res.product){ upd.productId = res.product.id; upd.productName = res.product.name || ''; }
-              try{ ch.doc.ref.update(upd); }catch(e){}
-            });
-          });
-        });
-        return true;
-      }
-    }catch(e){ console.warn(e); }
-    return false;
-  }
-  function startReceiver(){
-    if(!isCashier()) return;
-    startDirectListener();
-    if(!receiverTimer){ bridgePoll(); receiverTimer = setInterval(bridgePoll, 700); }
-  }
-
-  function cameraLink(){
+  function safeText(s){ return String(s == null ? '' : s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]}); }
+  function cameraURL(){
     var u = new URL('كاميرا-الكاشير.html', location.href);
-    u.searchParams.set('companyKey', companyKey(getDB()));
-    return u.toString();
+    u.searchParams.set('k', companyKey(getDB()));
+    return u.href;
   }
-  function drawQR(link){
-    var box = $('mobileBarcodeQr');
-    if(!box) return;
-    box.innerHTML = '<img alt="QR" style="width:220px;height:220px;border-radius:16px" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(link) + '">';
+  function makeQRURL(){
+    return 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=' + encodeURIComponent(cameraURL());
   }
-  function openModal(){
-    var old = $('mobileBarcodeModal'); if(old) old.remove();
-    var link = cameraLink();
-    var div = document.createElement('div');
-    div.id = 'mobileBarcodeModal';
-    div.className = 'mobile-barcode-modal-back';
-    div.innerHTML = '<div class="mobile-barcode-modal"><div class="mobile-barcode-head"><h3>قارئ باركود الجوال</h3><button type="button" class="btn small danger" id="mobileBarcodeClose">×</button></div><div class="mobile-barcode-grid"><div><div id="mobileBarcodeQr" class="mobile-barcode-qr">QR</div><div id="mobileBarcodeStatus" class="mobile-barcode-status">جاهز للاستقبال</div></div><div><p class="muted">امسح هذا الكود بالجوال. الرابط ثابت ويفتح كاميرا الباركود فقط.</p><label class="mobile-barcode-label">الرابط الثابت</label><textarea readonly id="mobileBarcodeLink"></textarea><div class="tools" style="margin-top:10px"><button type="button" class="btn success" id="mobileBarcodeCopy">نسخ الرابط</button></div><div class="mobile-barcode-help">ارفع ملف <b>كاميرا-الكاشير.html</b> بجانب ملف الكاشير، وافتحه من HTTPS حتى تعمل الكاميرا.</div></div></div></div>';
-    document.body.appendChild(div);
-    $('mobileBarcodeLink').value = link;
-    drawQR(link);
-    $('mobileBarcodeClose').onclick = function(){ div.remove(); };
-    div.addEventListener('click',function(e){ if(e.target === div) div.remove(); });
-    $('mobileBarcodeCopy').onclick = function(){ try{ navigator.clipboard.writeText(link); }catch(e){} if(window.toast) toast('تم نسخ الرابط'); };
-    startReceiver();
+  function playTinyBeep(){
+    try{
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      var ctx = new Ctx(); var osc = ctx.createOscillator(); var gain = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.value = 1040; gain.gain.value = 0.055;
+      osc.connect(gain); gain.connect(ctx.destination); osc.start();
+      setTimeout(function(){ try{osc.stop();ctx.close();}catch(e){} },70);
+    }catch(e){ try{ if(window.playBeep) playBeep(); }catch(x){} }
   }
+  function pulse(msg){
+    var el = $('oskarScanPulse');
+    if(!el){ el = document.createElement('div'); el.id='oskarScanPulse'; el.className='oskar-scan-pulse'; document.body.appendChild(el); }
+    el.textContent = msg || 'تمت الإضافة';
+    el.classList.add('show'); clearTimeout(el._t); el._t = setTimeout(function(){el.classList.remove('show')},850);
+  }
+  function installModal(){
+    if($('oskarRemoteModalBack')) return;
+    var back = document.createElement('div');
+    back.id = 'oskarRemoteModalBack'; back.className = 'oskar-remote-modal-back';
+    back.innerHTML = '<div class="oskar-remote-modal">'
+      + '<h3>قارئ الجوال</h3>'
+      + '<p>افتح هذا الرابط من الجوال. الصفحة تفتح الكاميرا فقط.</p>'
+      + '<img id="oskarRemoteQr" class="oskar-remote-qr" alt="QR">'
+      + '<div id="oskarRemoteLink" class="oskar-remote-link"></div>'
+      + '<div class="oskar-remote-actions">'
+      + '<button type="button" class="btn success" id="oskarCopyRemoteLink">نسخ الرابط</button>'
+      + '<button type="button" class="btn ghost" id="oskarOpenRemoteLink">فتح</button>'
+      + '<button type="button" class="btn danger" id="oskarCloseRemoteModal">إغلاق</button>'
+      + '</div></div>';
+    document.body.appendChild(back);
+    back.addEventListener('click', function(e){ if(e.target === back) closeMobileScannerModal(); });
+    $('oskarCloseRemoteModal').onclick = closeMobileScannerModal;
+    $('oskarCopyRemoteLink').onclick = function(){
+      var link = cameraURL();
+      if(navigator.clipboard) navigator.clipboard.writeText(link).then(function(){ if(window.toast) toast('تم نسخ الرابط'); });
+      else { prompt('انسخ الرابط', link); }
+    };
+    $('oskarOpenRemoteLink').onclick = function(){ window.open(cameraURL(), '_blank'); };
+  }
+  function openMobileScannerModal(){
+    installModal();
+    var link = cameraURL();
+    $('oskarRemoteQr').src = makeQRURL();
+    $('oskarRemoteLink').textContent = link;
+    $('oskarRemoteModalBack').style.display = 'flex';
+  }
+  function closeMobileScannerModal(){ var b=$('oskarRemoteModalBack'); if(b) b.style.display='none'; }
+  window.openMobileScannerModal = openMobileScannerModal;
+  window.closeMobileScannerModal = closeMobileScannerModal;
+
   function injectButton(){
-    if(!isCashier()) return;
-    var input = $('productSearch');
-    if(!input || $('mobileBarcodeButton')) return;
-    var toolbar = input.closest('.table-toolbar') || input.parentElement;
+    if((window.CFG && CFG.kind !== 'cashier') && !/الكاشير\.html/i.test(decodeURIComponent(location.pathname))) return;
+    if($('oskarMobileScannerButton')) return;
+    var toolbar = document.querySelector('#mainCard .table-toolbar') || document.querySelector('.table-toolbar') || document.querySelector('.top-actions');
     if(!toolbar) return;
     var btn = document.createElement('button');
-    btn.id = 'mobileBarcodeButton';
     btn.type = 'button';
-    btn.className = 'btn ghost mobile-barcode-button';
-    btn.innerHTML = '<span style="font-size:18px">▥</span><span>جوال</span>';
-    btn.onclick = openModal;
+    btn.id = 'oskarMobileScannerButton';
+    btn.className = 'btn oskar-mobile-scan-btn';
+    btn.innerHTML = '▦ قارئ الجوال';
+    btn.onclick = openMobileScannerModal;
     toolbar.appendChild(btn);
-    startReceiver();
+  }
+
+  function patchCartAdd(){
+    if(window.__OSKAR_CART_DUP_PATCH__) return;
+    if(typeof window.addProductToCart !== 'function') return;
+    window.__OSKAR_CART_DUP_PATCH__ = true;
+    var oldAdd = window.addProductToCart;
+    window.addProductToCart = function(id){
+      try{
+        window.cart = Array.isArray(window.cart) ? window.cart : (typeof cart !== 'undefined' && Array.isArray(cart) ? cart : []);
+        var existing = window.cart.find(function(i){ return String(i.productId) === String(id); });
+        if(existing){ existing.qty = Number(existing.qty || 0) + 1; if(window.renderCart) renderCart(); return existing; }
+      }catch(e){}
+      return oldAdd.apply(this, arguments);
+    };
+    try{ addProductToCart = window.addProductToCart; }catch(e){}
+  }
+
+  function findProductByBarcode(code){
+    code = String(code || '').trim(); if(!code) return null;
+    var d = getDB(); var rows = Array.isArray(d.products) ? d.products : [];
+    var exact = rows.find(function(p){ return String(p.barcode||'').trim() === code || String(p.sku||'').trim() === code || String(p.code||'').trim() === code; });
+    if(exact) return exact;
+    if(typeof window.productSearch === 'function'){
+      var r = productSearch(code) || [];
+      return r[0] || null;
+    }
+    var low = code.toLowerCase();
+    return rows.find(function(p){ return [p.name,p.barcode,p.sku,p.code].join(' ').toLowerCase().indexOf(low) !== -1; }) || null;
+  }
+
+  function applyBarcode(code){
+    code = String(code || '').trim(); if(!code) return false;
+    patchCartAdd();
+    var input = $('productSearch');
+    if(input){ input.value = code; try{ input.dispatchEvent(new Event('input', {bubbles:true})); }catch(e){} }
+    var product = findProductByBarcode(code);
+    if(!product){ pulse('باركود غير موجود: ' + code); playTinyBeep(); return false; }
+    if(typeof window.addProductToCart === 'function'){
+      window.addProductToCart(product.id);
+      if(window.renderCart) renderCart();
+      playTinyBeep(); pulse('تمت الإضافة: ' + (product.name || code));
+      return true;
+    }
+    return false;
+  }
+  window.oskarApplyMobileBarcode = applyBarcode;
+
+  async function pullCloud(d){
+    d = d || getDB(); companyKey(d); saveLocal(d);
+    if(navigator.onLine && window.FirebaseBridge && typeof FirebaseBridge.sync === 'function'){
+      try{
+        var nd = await FirebaseBridge.sync(d, {companyKey:companyKey(d), silent:true, background:true, noRender:true});
+        if(nd && typeof nd === 'object'){ d = nd; saveLocal(d); }
+      }catch(e){ console.warn('mobile barcode silent pull failed', e); }
+    }
+    return getDB();
+  }
+  async function pushCloud(d){
+    d = d || getDB(); companyKey(d); saveLocal(d);
+    if(navigator.onLine && window.FirebaseBridge){
+      try{
+        if(typeof FirebaseBridge.pushWithKey === 'function') await FirebaseBridge.pushWithKey(companyKey(d), {silent:true, background:true, noRender:true});
+        else if(typeof FirebaseBridge.sync === 'function'){
+          var nd = await FirebaseBridge.sync(d, {companyKey:companyKey(d), silent:true, background:true, noRender:true});
+          if(nd && typeof nd === 'object') saveLocal(nd);
+        }
+      }catch(e){ console.warn('mobile barcode silent push failed', e); }
+    }
+  }
+
+  async function readMobileQueue(){
+    if(receiverBusy) return;
+    if(Date.now() - lastPollAt < 180) return;
+    receiverBusy = true; lastPollAt = Date.now();
+    try{
+      var d = await pullCloud(getDB());
+      var key = companyKey(d);
+      var q = Array.isArray(d[QUEUE_KEY]) ? d[QUEUE_KEY] : [];
+      if(!q.length) return;
+      var changed = false;
+      q.sort(function(a,b){ return String(a.createdAt||'').localeCompare(String(b.createdAt||'')); });
+      q.forEach(function(item){
+        if(!item || !item.id || processed[item.id]) return;
+        if(item.companyKey && item.companyKey !== key) return;
+        if(item.status === 'done') { processed[item.id] = Date.now(); changed = true; return; }
+        var ok = applyBarcode(item.barcode || item.code || item.value || '');
+        item.status = 'done'; item.doneAt = new Date().toISOString(); item.ok = !!ok;
+        processed[item.id] = Date.now(); changed = true;
+      });
+      if(changed){
+        d[QUEUE_KEY] = q.slice(-120);
+        saveLocal(d); saveProcessed();
+        pushCloud(d);
+      }
+    }catch(e){ console.warn('mobile barcode receiver error', e); }
+    finally{ receiverBusy = false; }
+  }
+
+  function startReceiver(){
+    if(receiverStarted) return; receiverStarted = true;
+    patchCartAdd(); injectButton();
+    setInterval(readMobileQueue, 280);
+    setTimeout(readMobileQueue, 120);
+    setTimeout(readMobileQueue, 650);
+  }
+
+
+  function patchBridgeSync(){
+    try{
+      if(window.FirebaseBridge && typeof FirebaseBridge.sync === 'function' && !FirebaseBridge.sync.__oskarSilentWrapped){
+        var oldBridgeSync = FirebaseBridge.sync;
+        var wrappedBridgeSync = async function(){
+          lastBridgeSyncTouch = Date.now();
+          try{ return await oldBridgeSync.apply(this, arguments); }
+          finally{ lastBridgeSyncTouch = Date.now(); }
+        };
+        wrappedBridgeSync.__oskarSilentWrapped = true;
+        FirebaseBridge.sync = wrappedBridgeSync;
+      }
+    }catch(e){}
+  }
+  function installRenderGuard(){
+    if(window.__OSKAR_CASHIER_RENDER_GUARD__) return;
+    if(typeof window.renderPage !== 'function') return;
+    window.__OSKAR_CASHIER_RENDER_GUARD__ = true;
+    var oldRenderPage = window.renderPage;
+    window.renderPage = function(){
+      try{
+        var isCashier = (window.CFG && CFG.kind === 'cashier') || /الكاشير\.html/i.test(decodeURIComponent(location.pathname));
+        var main = $('mainCard');
+        if(isCashier && main && main.innerHTML.trim() && Date.now() - lastBridgeSyncTouch < 2500){
+          setTimeout(injectButton, 0);
+          setTimeout(startReceiver, 20);
+          return;
+        }
+      }catch(e){}
+      return oldRenderPage.apply(this, arguments);
+    };
+    try{ renderPage = window.renderPage; }catch(e){}
   }
 
   function installSilentSync(){
-    var css = document.createElement('style');
-    css.id = 'oskar-mobile-barcode-style';
-    css.textContent = '.syncing{animation:none!important;transform:none!important}.top-actions button[onclick*="syncNow"]{transition:none!important}.mobile-barcode-button{white-space:nowrap}.mobile-barcode-modal-back{position:fixed;inset:0;background:rgba(15,23,42,.66);backdrop-filter:blur(7px);z-index:980;display:flex;align-items:flex-start;justify-content:center;padding:42px 12px;overflow:auto}.mobile-barcode-modal{width:min(780px,96vw);background:#fff;border-radius:26px;padding:16px;box-shadow:0 30px 80px rgba(0,0,0,.28)}.mobile-barcode-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5eee8;padding-bottom:10px;margin-bottom:12px}.mobile-barcode-head h3{margin:0;font-size:20px;font-weight:950}.mobile-barcode-grid{display:grid;grid-template-columns:250px 1fr;gap:18px}.mobile-barcode-qr{width:240px;height:240px;border:1px solid #d8e8e1;border-radius:22px;background:#f8fffb;display:flex;align-items:center;justify-content:center;padding:10px}.mobile-barcode-status{margin-top:10px;background:#dcfce7;color:#166534;padding:8px 10px;border-radius:999px;text-align:center;font-weight:900}.mobile-barcode-label{display:block;font-weight:950;margin-bottom:6px}.mobile-barcode-modal textarea{width:100%;min-height:96px;direction:ltr;text-align:left;font-size:12px}.mobile-barcode-help{margin-top:10px;color:#64748b;font-size:13px;font-weight:800}@media(max-width:680px){.mobile-barcode-grid{grid-template-columns:1fr}.mobile-barcode-qr{margin:auto}}';
-    document.head.appendChild(css);
+    if(window.__OSKAR_SILENT_SYNC_PATCH__) return;
+    window.__OSKAR_SILENT_SYNC_PATCH__ = true;
+    var oldSync = window.syncNow;
     window.syncNow = async function(show){
-      var d = getDB();
-      if(!navigator.onLine){ return d; }
+      show = show !== false;
+      var btns = document.querySelectorAll('.syncing');
+      btns.forEach(function(b){ b.classList.remove('syncing'); });
       try{
-        if(window.FirebaseBridge && typeof FirebaseBridge.sync === 'function'){
-          d = await FirebaseBridge.sync(d,{companyKey:companyKey(d),silent:true,noRender:true,background:true});
-          saveLocal(d);
-        }
-      }catch(e){ console.warn(e); }
-      try{ var b = $('syncState'); if(b) b.textContent = navigator.onLine ? 'متصل' : 'بدون نت'; }catch(e){}
-      return d;
+        var d = await pullCloud(getDB());
+        saveLocal(d);
+        if(show && window.toast) toast('تمت المزامنة');
+        return d;
+      }catch(e){
+        console.warn(e);
+        try{ if(oldSync) return await oldSync(false); }catch(x){}
+        if(show && window.toast) toast('تعذر المزامنة، البيانات محفوظة محليًا');
+      }finally{
+        document.querySelectorAll('.syncing').forEach(function(b){ b.classList.remove('syncing'); });
+        try{ if(window.updateSyncState) updateSyncState(); }catch(e){}
+      }
     };
     try{ syncNow = window.syncNow; }catch(e){}
   }
 
   var oldRenderCashier = window.renderCashier;
-  if(typeof oldRenderCashier === 'function' && !oldRenderCashier.__mobileBarcodeWrapped){
-    var wrapped = function(){ var r = oldRenderCashier.apply(this, arguments); setTimeout(injectButton, 0); setTimeout(startReceiver, 80); return r; };
-    wrapped.__mobileBarcodeWrapped = true;
+  if(typeof oldRenderCashier === 'function' && !oldRenderCashier.__oskarMobileFinalWrapped){
+    var wrapped = function(){ var r = oldRenderCashier.apply(this, arguments); setTimeout(injectButton, 0); setTimeout(startReceiver, 50); return r; };
+    wrapped.__oskarMobileFinalWrapped = true;
     window.renderCashier = wrapped;
     try{ renderCashier = wrapped; }catch(e){}
   }
 
+  patchBridgeSync();
+  installRenderGuard();
   installSilentSync();
-  document.addEventListener('DOMContentLoaded', function(){ setTimeout(injectButton, 120); setTimeout(startReceiver, 180); });
-  if(document.readyState !== 'loading'){ setTimeout(injectButton, 120); setTimeout(startReceiver, 180); }
+  setTimeout(patchBridgeSync, 120);
+  setTimeout(installRenderGuard, 150);
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(injectButton, 80); setTimeout(startReceiver, 120); });
+  if(document.readyState !== 'loading'){ setTimeout(injectButton, 80); setTimeout(startReceiver, 120); }
 })();
 </script>
-
 </body>
 </html>
