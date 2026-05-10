@@ -5,8 +5,8 @@
   window.__OSKAR_CORE_FIX_20260509__=true;
   const APP='supermarket_pos_ar_v1';
   const DEFAULT_PASS='0000000000@@';
-  const DEFAULT_COMPANY='SHOP-D52DC';
-  const LEGACY_COMPANY_KEYS=new Set(['SUPER-0001']);
+  const DEFAULT_COMPANY='echo-store-cdgjhdvjt';
+  const LEGACY_COMPANY_KEYS=new Set(['SUPER-0001','OMAR-AD0BE-02']);
   let syncTimer=null, installing=false;
   const now=()=>new Date().toISOString();
   const safe=n=>Number(n||0)||0;

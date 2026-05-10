@@ -15,8 +15,8 @@ const firebaseConfig = {
   'use strict';
   const APP_KEY='supermarket_pos_ar_v1';
   const ROOT_PATH='pos_projects';
-  const DEFAULT_COMPANY='SHOP-D52DC';
-  const LEGACY_COMPANY_KEYS=new Set(['SUPER-0001']);
+  const DEFAULT_COMPANY='echo-store-cdgjhdvjt';
+  const LEGACY_COMPANY_KEYS=new Set(['SUPER-0001','OMAR-AD0BE-02']);
   const DELETE_KEYS=['__deleted','_deletedIds'];
   const META_KEYS=new Set(['lastSyncAt','lastLocalUpdate','lastCloudPull','__deleted','_deletedIds','_syncMeta']);
   const ITEM_META=new Set(['_updatedAt','_createdAt','_deleted','deletedAt','_syncStamp']);

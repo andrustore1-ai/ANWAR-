@@ -1,7 +1,7 @@
 // ملف توافق لمن كان يستدعي firebase-config.js سابقاً
 // الإعداد الفعلي المستخدم في النظام موجود في firebase.js.
 window.OSKAR_FIREBASE_CONFIG_READY = true;
-window.OSKAR_FIREBASE_LOGIN_KEY = "SHOP-D52DC";
+window.OSKAR_FIREBASE_LOGIN_KEY = "echo-store-cdgjhdvjt";
 window.OSKAR_FIREBASE_CONFIG = {
   apiKey: "AIzaSyCnLAY7zQyBy7gUuL9wszt9aEhiJgvRmxI",
   authDomain: "shop-d52dc.firebaseapp.com",
