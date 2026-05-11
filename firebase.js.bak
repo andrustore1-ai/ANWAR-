@@ -1,14 +1,14 @@
 // firebase.js - ملف فايربيز الوحيد في المشروع
 // إصلاح جذري: حفظ محلي أولاً، ثم مزامنة سحابية آمنة للحفظ والتعديل والحذف بدون تغيير تصميم الصفحات.
 const firebaseConfig = {
-  apiKey: "AIzaSyA5s6-40IjofQxZWXbbrz4-5u-pQqpgZGA",
-  authDomain: "omar-ad0be.firebaseapp.com",
-  databaseURL: "https://omar-ad0be-default-rtdb.firebaseio.com",
-  projectId: "omar-ad0be",
-  storageBucket: "omar-ad0be.firebasestorage.app",
-  messagingSenderId: "863859708783",
-  appId: "1:863859708783:web:97cd6783775ef3c395ce9a",
-  measurementId: "G-HRLW64FXWV"
+  apiKey: "AIzaSyCV1h6VbZ2A7kjuEJ1D1sq6BbOns1wUSow",
+  authDomain: "momen-5a28a.firebaseapp.com",
+  databaseURL: "https://momen-5a28a-default-rtdb.firebaseio.com",
+  projectId: "momen-5a28a",
+  storageBucket: "momen-5a28a.firebasestorage.app",
+  messagingSenderId: "452258478588",
+  appId: "1:452258478588:web:b89266daa4171d87165a79",
+  measurementId: "G-63TR9FE4F7"
 };
 (function(){
   'use strict';

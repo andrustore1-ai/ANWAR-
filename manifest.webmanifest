@@ -1,7 +1,7 @@
 {
-  "name": "سوبرماركت المحاسبي الاحترافي",
-  "short_name": "سوبرماركت",
-  "start_url": "index.html",
+  "name": "كاشير أوسكار المحاسبي",
+  "short_name": "كاشير أوسكار",
+  "start_url": "index.html?app=1",
   "display": "standalone",
   "dir": "rtl",
   "lang": "ar",

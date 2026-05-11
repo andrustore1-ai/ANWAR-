@@ -13,13 +13,13 @@
 - البطاقة الآن تأخذ لونها وشكلها من كود KPI الأساسي فقط.
 
 3) تم تحديث Firebase إلى بيانات المشروع الجديد:
-- projectId: shop-d52dc
-- authDomain: shop-d52dc.firebaseapp.com
-- databaseURL: https://shop-d52dc-default-rtdb.firebaseio.com
-- storageBucket: shop-d52dc.appspot.com
-- messagingSenderId: 97580537866
-- appId: 1:97580537866:web:abc46e5a2f527b6300a7f3
-- measurementId: G-956RQMBP42
+- projectId: momen-5a28a
+- authDomain: momen-5a28a.firebaseapp.com
+- databaseURL: https://momen-5a28a-default-rtdb.firebaseio.com
+- storageBucket: momen-5a28a.firebasestorage.app
+- messagingSenderId: 452258478588
+- appId: 1:452258478588:web:b89266daa4171d87165a79
+- measurementId: G-63TR9FE4F7
 
 4) تم تحديث مفتاح الشركة الافتراضي إلى echo-store-cdgjhdvjt، مع إبقاء OMAR-AD0BE-02 كمفتاح قديم للمراعاة/الترحيل.
 

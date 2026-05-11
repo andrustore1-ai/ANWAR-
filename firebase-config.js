@@ -3,12 +3,12 @@
 window.OSKAR_FIREBASE_CONFIG_READY = true;
 window.OSKAR_FIREBASE_LOGIN_KEY = "echo-store-cdgjhdvjt";
 window.OSKAR_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyCnLAY7zQyBy7gUuL9wszt9aEhiJgvRmxI",
-  authDomain: "shop-d52dc.firebaseapp.com",
-  databaseURL: "https://shop-d52dc-default-rtdb.firebaseio.com",
-  projectId: "shop-d52dc",
-  storageBucket: "shop-d52dc.appspot.com",
-  messagingSenderId: "97580537866",
-  appId: "1:97580537866:web:abc46e5a2f527b6300a7f3",
-  measurementId: "G-956RQMBP42"
+  apiKey: "AIzaSyCV1h6VbZ2A7kjuEJ1D1sq6BbOns1wUSow",
+  authDomain: "momen-5a28a.firebaseapp.com",
+  databaseURL: "https://momen-5a28a-default-rtdb.firebaseio.com",
+  projectId: "momen-5a28a",
+  storageBucket: "momen-5a28a.firebasestorage.app",
+  messagingSenderId: "452258478588",
+  appId: "1:452258478588:web:b89266daa4171d87165a79",
+  measurementId: "G-63TR9FE4F7"
 };
