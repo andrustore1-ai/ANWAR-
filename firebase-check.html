@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>فحص Firebase</title>
+  <style>
+    body{margin:0;background:#f1f5f9;font-family:Tahoma,Arial,sans-serif;color:#111827;padding:18px}.card{max-width:700px;margin:auto;background:white;border-radius:28px;padding:22px;box-shadow:0 18px 45px rgba(15,23,42,.08)}h1{margin-top:0}.test{padding:14px;border-radius:18px;margin:10px 0;font-weight:900;line-height:1.8}.wait{background:#f3f4f6;color:#475569}.ok{background:#dcfce7;color:#166534}.bad{background:#fee2e2;color:#991b1b}.btn{display:inline-block;border:0;background:#ea580c;color:white;border-radius:16px;padding:12px 16px;font-weight:900;text-decoration:none;margin:6px;cursor:pointer}.dark{background:#111827}.mono{direction:ltr;text-align:left;background:#f8fafc;border:1px solid #e5e7eb;border-radius:14px;padding:12px;white-space:pre-wrap;overflow:auto}.small{color:#64748b;line-height:1.8;font-weight:700}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>فحص اتصال Firebase</h1>
+    <p class="small">هذه الصفحة لا تستخدم Firebase Auth نهائياً. إذا ظهر خطأ auth/admin-restricted-operation فأنت تفتح نسخة قديمة.</p>
+    <button id="run" class="btn">تشغيل الفحص</button><a href="login.html" class="btn dark">تسجيل الدخول</a><a href="index.html" class="btn dark">المنيو</a>
+    <div id="results"></div>
+    <h3>قواعد Firestore المقترحة للتجربة</h3>
+    <div class="mono">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /restaurants/r7_burger/{document=**} {
+      allow read, write: if true;
+    }
+  }
+}</div>
+  </main>
+  <script type="module">
+    import { refDoc, setDoc, getDoc, serverTimestamp, firebaseErrorMessage, ensureSeedData } from './firebase.js';
+    const $=id=>document.getElementById(id); const line=(name,state,msg)=>`<div class="test ${state}"><b>${name}</b><br>${msg}</div>`;
+    async function run(){
+      const out=[]; $('results').innerHTML=line('بدء الفحص','wait','جاري الاختبار...');
+      try{ out.push(line('تحميل firebase.js','ok','تم تحميل ملف Firebase بدون Auth.')); }catch(e){ out.push(line('تحميل firebase.js','bad',String(e))); }
+      try{ await setDoc(refDoc('_checks','browser'),{ok:true,updatedAt:serverTimestamp()},{merge:true}); out.push(line('كتابة Firestore','ok','تمت الكتابة بنجاح.')); }catch(e){ out.push(line('كتابة Firestore','bad',firebaseErrorMessage(e))); }
+      try{ const s=await getDoc(refDoc('_checks','browser')); out.push(line('قراءة Firestore',s.exists()?'ok':'bad',s.exists()?'تمت القراءة بنجاح.':'تم الاتصال لكن لم يتم العثور على سجل الفحص.')); }catch(e){ out.push(line('قراءة Firestore','bad',firebaseErrorMessage(e))); }
+      try{ await ensureSeedData({createDefaultKey:true}); out.push(line('تهيئة بيانات المطعم','ok','تم إنشاء الإعدادات والأقسام والأصناف الافتراضية إن لم تكن موجودة.')); }catch(e){ out.push(line('تهيئة بيانات المطعم','bad',firebaseErrorMessage(e))); }
+      $('results').innerHTML=out.join('');
+    }
+    $('run').onclick=run; run();
+  </script>
+</body>
+</html>

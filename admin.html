@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة الإدارة - R7 Burger</title>
+  <style>
+    :root{--brand:#ea580c;--brand2:#fb923c;--dark:#101827;--muted:#6b7280;--line:#eef0f4;--bg:#f6f7fb;--ok:#16a34a;--bad:#dc2626;--warn:#f59e0b;--card:#fff;--shadow:0 18px 45px rgba(15,23,42,.08)}
+    *{box-sizing:border-box} body{margin:0;background:#eef1f6;color:var(--dark);font-family:Tahoma,Arial,sans-serif} button,input,textarea,select{font:inherit} button{cursor:pointer;border:0}.app{max-width:980px;min-height:100vh;margin:auto;background:#f8fafc}.top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{display:flex;align-items:center;gap:12px}.logo{width:52px;height:52px;border-radius:18px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px}h1{font-size:21px;margin:0;font-weight:900}.sub{font-size:12px;color:var(--muted);font-weight:800}.nav{display:flex;gap:8px;overflow:auto;padding:12px 14px;background:#fff;border-bottom:1px solid var(--line)}.nav a,.nav button{white-space:nowrap;text-decoration:none;background:#fff7ed;color:#9a3412;padding:11px 14px;border-radius:16px;font-weight:900}.nav .dark{background:#111827;color:#fff}.wrap{padding:16px;display:grid;grid-template-columns:1fr;gap:16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:#fff;border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:var(--shadow)}.card h2{margin:0 0 16px;font-size:21px;font-weight:900}.field,label select{width:100%;border:1px solid var(--line);background:#f8fafc;border-radius:17px;padding:13px;margin:7px 0 12px;outline:none}.lbl{font-size:12px;color:var(--muted);font-weight:900;margin-top:8px}.primary{border-radius:17px;padding:13px 16px;background:var(--brand);color:#fff;font-weight:900;box-shadow:0 8px 20px rgba(234,88,12,.18)}.secondary{border-radius:17px;padding:13px 16px;background:#111827;color:#fff;font-weight:900}.danger{border-radius:14px;padding:10px 12px;background:#fee2e2;color:#991b1b;font-weight:900}.ghost{border-radius:14px;padding:10px 12px;background:#f3f4f6;color:#111827;font-weight:900}.ok{border-radius:14px;padding:10px 12px;background:#dcfce7;color:#166534;font-weight:900}.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:20px;padding:12px;background:#fff;display:grid;gap:8px}.itemHead{display:flex;justify-content:space-between;gap:10px;align-items:center}.item b{font-size:16px}.muted{color:var(--muted);font-size:12px;line-height:1.7}.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900}.pill.ok{background:#dcfce7;color:#166534}.pill.bad{background:#fee2e2;color:#991b1b}.pill.warn{background:#fef3c7;color:#92400e}.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:100;max-width:600px;width:calc(100% - 34px);padding:16px 18px;border-radius:20px;background:#111827;color:#fff;font-weight:900;display:none;box-shadow:0 15px 40px rgba(15,23,42,.22);line-height:1.7}.toast.show{display:block}.toast.err{background:#b91c1c}.toast.ok{background:#047857}.alert{padding:14px;border-radius:18px;margin-bottom:12px;font-weight:800;line-height:1.8}.alert.warn{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}.alert.err{background:#fee2e2;color:#991b1b}.hidden{display:none}.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:14px}.tab{white-space:nowrap;background:#f3f4f6;color:#475569;border-radius:16px;padding:11px 14px;font-weight:900}.tab.active{background:var(--brand);color:#fff}img.thumb{width:68px;height:68px;border-radius:16px;object-fit:cover;background:#eef2f7}.actions{display:flex;gap:8px;flex-wrap:wrap}.mono{direction:ltr;text-align:left;background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:10px;overflow:auto;font-family:monospace;font-size:12px}@media(max-width:760px){.grid{grid-template-columns:1fr}.top{align-items:flex-start}.wrap{padding:12px}.card{border-radius:24px}}
+  </style>
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+  <div class="app">
+    <header class="top">
+      <div class="brand"><div class="logo">R7</div><div><h1>لوحة الإدارة</h1><div id="sessionInfo" class="sub">...</div></div></div>
+      <button id="logoutBtn" class="danger">تسجيل خروج</button>
+    </header>
+    <nav class="nav">
+      <button id="seedBtn" class="dark">تهيئة Firebase</button>
+      <a href="tables.html">الطاولات و QR</a>
+      <a href="kitchen.html">المطبخ</a>
+      <a href="reports.html">التقارير والفواتير</a>
+      <a href="firebase-check.html">فحص Firebase</a>
+    </nav>
+
+    <main class="wrap">
+      <div id="bootstrapWarning" class="alert warn hidden">أنت داخل بالمفتاح الافتراضي 0000. أنشئ مفتاحاً جديداً من قسم المفاتيح، ثم لا تستخدم 0000 في التشغيل النهائي.</div>
+      <div id="firebaseError" class="alert err hidden"></div>
+
+      <section class="card">
+        <div class="tabs">
+          <button class="tab active" data-tab="settings">الإعدادات</button>
+          <button class="tab" data-tab="categories">الأقسام</button>
+          <button class="tab" data-tab="products">الأصناف</button>
+          <button class="tab" data-tab="keys">مفاتيح الدخول</button>
+        </div>
+
+        <div id="tab-settings">
+          <h2>إعدادات المطعم</h2>
+          <div class="grid">
+            <div><div class="lbl">اسم المطعم</div><input id="setName" class="field" placeholder="R7 Burger"></div>
+            <div><div class="lbl">الشعار النصي</div><input id="setSlogan" class="field" placeholder="نظام المنيو الذكي"></div>
+            <div><div class="lbl">العملة</div><input id="setCurrency" class="field" placeholder="₪"></div>
+            <div><div class="lbl">رقم واتساب المطعم مع رمز الدولة</div><input id="setWhatsapp" class="field" placeholder="970590000000"></div>
+          </div>
+          <div class="lbl">رابط المنيو العام للطاولات - اختياري</div>
+          <input id="setMenuUrl" class="field" placeholder="https://yourdomain.com/index.html">
+          <button id="saveSettings" class="primary">حفظ الإعدادات</button>
+        </div>
+
+        <div id="tab-categories" class="hidden">
+          <h2>الأقسام</h2>
+          <div class="grid">
+            <input id="catName" class="field" placeholder="اسم القسم مثل: المشروبات">
+            <input id="catSort" class="field" type="number" placeholder="الترتيب">
+          </div>
+          <button id="addCat" class="primary">إضافة قسم</button>
+          <div id="catsList" class="list" style="margin-top:14px"></div>
+        </div>
+
+        <div id="tab-products" class="hidden">
+          <h2>الأصناف</h2>
+          <div class="grid">
+            <input id="prodName" class="field" placeholder="اسم الصنف">
+            <input id="prodPrice" class="field" type="number" placeholder="السعر">
+            <select id="prodCat" class="field"></select>
+            <input id="prodSort" class="field" type="number" placeholder="الترتيب">
+          </div>
+          <input id="prodImage" class="field" placeholder="رابط صورة الصنف">
+          <textarea id="prodDesc" class="field" placeholder="وصف الصنف" rows="3"></textarea>
+          <button id="addProd" class="primary">إضافة صنف</button>
+          <div id="productsList" class="list" style="margin-top:14px"></div>
+        </div>
+
+        <div id="tab-keys" class="hidden">
+          <h2>مفاتيح الدخول</h2>
+          <div class="alert warn">يمكن إنشاء مفتاح دائم أو مؤقت. المؤقت يقبل: دقيقة، يوم، أسبوع، شهر، سنة مع العدد.</div>
+          <div class="grid">
+            <input id="keyLabel" class="field" placeholder="اسم المفتاح مثل: مدير المطبخ">
+            <input id="keyValue" class="field" placeholder="اتركه فارغاً لتوليد مفتاح تلقائي">
+            <select id="keyType" class="field"><option value="permanent">دائم</option><option value="temporary">مؤقت</option></select>
+            <select id="keyUnit" class="field"><option value="minute">دقيقة</option><option value="day">يوم</option><option value="week">أسبوع</option><option value="month">شهر</option><option value="year">سنة</option></select>
+            <input id="keyAmount" class="field" type="number" value="1" placeholder="العدد">
+            <input id="keyMaxUses" class="field" type="number" placeholder="عدد مرات الاستخدام - اختياري">
+          </div>
+          <button id="createKey" class="primary">إنشاء مفتاح</button>
+          <div id="newKeyBox" class="mono hidden"></div>
+          <div id="keysList" class="list" style="margin-top:14px"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import { requireAdmin, sessionGet, logout, col, refDoc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, getDocs, onSnapshot, serverTimestamp, Timestamp, firebaseErrorMessage, sha256, makeKey, toMillis, ensureSeedData, snapshotList } from './firebase.js';
+    if(!requireAdmin()) throw new Error('not logged');
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    const toast = (msg, type='') => { const el=$('toast'); el.textContent=msg; el.className='toast show '+type; setTimeout(()=>el.className='toast',4200); };
+    const showErr = msg => { $('firebaseError').textContent = msg; $('firebaseError').classList.remove('hidden'); };
+    const clearErr = () => $('firebaseError').classList.add('hidden');
+    let settings = {}, categories = [], products = [], keys = [];
+
+    const session = sessionGet();
+    $('sessionInfo').textContent = session?.label || 'Admin';
+    if(session?.bootstrap) $('bootstrapWarning').classList.remove('hidden');
+    $('logoutBtn').onclick = logout;
+
+    function switchTab(name){
+      document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+      ['settings','categories','products','keys'].forEach(x=>$('tab-'+x).classList.toggle('hidden', x!==name));
+    }
+    document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
+
+    function fillSettings(){
+      $('setName').value = settings.name || 'R7 Burger';
+      $('setSlogan').value = settings.slogan || 'نظام المنيو الذكي';
+      $('setCurrency').value = settings.currency || '₪';
+      $('setWhatsapp').value = settings.whatsapp || '';
+      $('setMenuUrl').value = settings.publicMenuUrl || '';
+    }
+
+    function renderCategories(){
+      $('prodCat').innerHTML = categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+      $('catsList').innerHTML = categories.sort((a,b)=>Number(a.sort||0)-Number(b.sort||0)).map(c=>`
+        <div class="item">
+          <div class="itemHead"><b>${esc(c.name)}</b><span class="pill ${c.active!==false?'ok':'bad'}">${c.active!==false?'فعال':'معطل'}</span></div>
+          <div class="muted">الترتيب: ${Number(c.sort||0)} · ID: ${esc(c.id)}</div>
+          <div class="actions"><button class="ghost" data-toggle-cat="${esc(c.id)}">${c.active!==false?'تعطيل':'تفعيل'}</button><button class="danger" data-del-cat="${esc(c.id)}">حذف</button></div>
+        </div>`).join('') || '<div class="muted">لا توجد أقسام.</div>';
+      document.querySelectorAll('[data-toggle-cat]').forEach(b=>b.onclick=()=>toggleCat(b.dataset.toggleCat));
+      document.querySelectorAll('[data-del-cat]').forEach(b=>b.onclick=()=>deleteCat(b.dataset.delCat));
+    }
+
+    function renderProducts(){
+      const catName = id => categories.find(c=>c.id===id)?.name || 'بدون قسم';
+      $('productsList').innerHTML = products.sort((a,b)=>Number(a.sort||0)-Number(b.sort||0)).map(p=>`
+        <div class="item">
+          <div class="itemHead"><div class="row"><img class="thumb" src="${esc(p.image||'')}" onerror="this.style.display='none'"><div><b>${esc(p.name)}</b><div class="muted">${esc(catName(p.categoryId))} · ${Number(p.price||0)} ${esc(settings.currency||'₪')}</div></div></div><span class="pill ${p.active!==false?'ok':'bad'}">${p.active!==false?'فعال':'معطل'}</span></div>
+          <div class="muted">${esc(p.description||'')}</div>
+          <div class="actions"><button class="ghost" data-toggle-prod="${esc(p.id)}">${p.active!==false?'تعطيل':'تفعيل'}</button><button class="danger" data-del-prod="${esc(p.id)}">حذف</button></div>
+        </div>`).join('') || '<div class="muted">لا توجد أصناف.</div>';
+      document.querySelectorAll('[data-toggle-prod]').forEach(b=>b.onclick=()=>toggleProd(b.dataset.toggleProd));
+      document.querySelectorAll('[data-del-prod]').forEach(b=>b.onclick=()=>deleteProd(b.dataset.delProd));
+    }
+
+    function keyStatus(k){
+      if(k.active === false) return ['معطل','bad'];
+      const ex = toMillis(k.expiresAt); if(ex && Date.now() > ex) return ['منتهي','bad'];
+      if(k.maxUses && Number(k.useCount||0) >= Number(k.maxUses)) return ['مستهلك','warn'];
+      return ['فعال','ok'];
+    }
+    function renderKeys(){
+      $('keysList').innerHTML = keys.map(k=>{ const st=keyStatus(k); const ex=toMillis(k.expiresAt); return `
+        <div class="item">
+          <div class="itemHead"><b>${esc(k.label||'مفتاح')}</b><span class="pill ${st[1]}">${st[0]}</span></div>
+          <div class="muted">النوع: ${k.type==='temporary'?'مؤقت':'دائم'} · الاستخدام: ${Number(k.useCount||0)}${k.maxUses?' / '+k.maxUses:''} ${ex?'· ينتهي: '+new Date(ex).toLocaleString('ar'):''}</div>
+          <div class="actions"><button class="ghost" data-toggle-key="${esc(k.id)}">${k.active!==false?'تعطيل':'تفعيل'}</button><button class="danger" data-del-key="${esc(k.id)}">حذف</button></div>
+        </div>`}).join('') || '<div class="muted">لا توجد مفاتيح بعد.</div>';
+      document.querySelectorAll('[data-toggle-key]').forEach(b=>b.onclick=()=>toggleKey(b.dataset.toggleKey));
+      document.querySelectorAll('[data-del-key]').forEach(b=>b.onclick=()=>deleteKey(b.dataset.delKey));
+    }
+
+    $('saveSettings').onclick = async()=>{
+      try{ clearErr(); await setDoc(refDoc('settings','main'), { name:$('setName').value.trim()||'R7 Burger', slogan:$('setSlogan').value.trim(), currency:$('setCurrency').value.trim()||'₪', whatsapp:$('setWhatsapp').value.trim(), publicMenuUrl:$('setMenuUrl').value.trim(), updatedAt:serverTimestamp() }, {merge:true}); toast('تم حفظ الإعدادات','ok'); }
+      catch(err){ showErr(firebaseErrorMessage(err)); toast(firebaseErrorMessage(err),'err'); }
+    };
+
+    $('addCat').onclick = async()=>{
+      const name=$('catName').value.trim(); if(!name) return toast('اكتب اسم القسم','err');
+      try{ await addDoc(col('categories'), {name, sort:Number($('catSort').value||0), active:true, createdAt:serverTimestamp()}); $('catName').value=''; $('catSort').value=''; toast('تمت إضافة القسم','ok'); }catch(err){ showErr(firebaseErrorMessage(err)); }
+    };
+    async function toggleCat(id){ const c=categories.find(x=>x.id===id); await updateDoc(refDoc('categories',id), {active: c?.active===false}); }
+    async function deleteCat(id){ if(confirm('حذف القسم؟')) await deleteDoc(refDoc('categories',id)); }
+
+    $('addProd').onclick = async()=>{
+      const name=$('prodName').value.trim(); if(!name) return toast('اكتب اسم الصنف','err');
+      try{ await addDoc(col('products'), { name, price:Number($('prodPrice').value||0), categoryId:$('prodCat').value, sort:Number($('prodSort').value||0), image:$('prodImage').value.trim(), description:$('prodDesc').value.trim(), active:true, createdAt:serverTimestamp() }); ['prodName','prodPrice','prodSort','prodImage','prodDesc'].forEach(id=>$(id).value=''); toast('تمت إضافة الصنف','ok'); }catch(err){ showErr(firebaseErrorMessage(err)); }
+    };
+    async function toggleProd(id){ const p=products.find(x=>x.id===id); await updateDoc(refDoc('products',id), {active: p?.active===false}); }
+    async function deleteProd(id){ if(confirm('حذف الصنف؟')) await deleteDoc(refDoc('products',id)); }
+
+    function expiryDate(){
+      if($('keyType').value === 'permanent') return null;
+      const amount = Math.max(1, Number($('keyAmount').value||1));
+      const d = new Date(); const unit=$('keyUnit').value;
+      if(unit==='minute') d.setMinutes(d.getMinutes()+amount);
+      if(unit==='day') d.setDate(d.getDate()+amount);
+      if(unit==='week') d.setDate(d.getDate()+amount*7);
+      if(unit==='month') d.setMonth(d.getMonth()+amount);
+      if(unit==='year') d.setFullYear(d.getFullYear()+amount);
+      return Timestamp.fromDate(d);
+    }
+    $('createKey').onclick = async()=>{
+      const plain = $('keyValue').value.trim() || makeKey(10);
+      const label = $('keyLabel').value.trim() || 'مفتاح إدارة';
+      try{
+        await addDoc(col('accessKeys'), { label, hash: await sha256(plain), type:$('keyType').value, active:true, expiresAt: expiryDate(), maxUses: $('keyMaxUses').value ? Number($('keyMaxUses').value) : null, useCount:0, createdAt:serverTimestamp() });
+        $('newKeyBox').classList.remove('hidden'); $('newKeyBox').textContent = 'المفتاح الجديد: ' + plain + '\nانسخه الآن، لن يظهر كنص مرة أخرى.';
+        $('keyValue').value=''; $('keyLabel').value=''; $('keyMaxUses').value=''; toast('تم إنشاء المفتاح','ok');
+      }catch(err){ showErr(firebaseErrorMessage(err)); }
+    };
+    async function toggleKey(id){ const k=keys.find(x=>x.id===id); await updateDoc(refDoc('accessKeys',id), {active:k?.active===false}); }
+    async function deleteKey(id){ if(confirm('حذف المفتاح؟')) await deleteDoc(refDoc('accessKeys',id)); }
+
+    $('seedBtn').onclick = async()=>{ try{ await ensureSeedData({createDefaultKey:true}); toast('تمت تهيئة بيانات Firebase','ok'); clearErr(); }catch(err){ showErr(firebaseErrorMessage(err)); toast(firebaseErrorMessage(err),'err'); } };
+
+    async function load(){
+      try{
+        const s=await getDoc(refDoc('settings','main')); if(s.exists()) settings=s.data(); fillSettings();
+        categories=snapshotList(await getDocs(col('categories'))); renderCategories();
+        products=snapshotList(await getDocs(col('products'))); renderProducts();
+        keys=snapshotList(await getDocs(col('accessKeys'))); renderKeys();
+        clearErr();
+      }catch(err){ showErr(firebaseErrorMessage(err)); }
+    }
+    function live(){
+      onSnapshot(refDoc('settings','main'), s=>{ if(s.exists()){settings=s.data(); fillSettings(); renderProducts();}}, e=>showErr(firebaseErrorMessage(e)));
+      onSnapshot(col('categories'), s=>{categories=snapshotList(s); renderCategories(); renderProducts();}, e=>showErr(firebaseErrorMessage(e)));
+      onSnapshot(col('products'), s=>{products=snapshotList(s); renderProducts();}, e=>showErr(firebaseErrorMessage(e)));
+      onSnapshot(col('accessKeys'), s=>{keys=snapshotList(s); renderKeys();}, e=>showErr(firebaseErrorMessage(e)));
+    }
+    await load(); live();
+  </script>
+</body>
+</html>

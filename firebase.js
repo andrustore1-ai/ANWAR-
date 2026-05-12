@@ -1,347 +1,237 @@
-// firebase.js - ملف فايربيز الوحيد في المشروع
-// إصلاح جذري: حفظ محلي أولاً، ثم مزامنة سحابية آمنة للحفظ والتعديل والحذف بدون تغيير تصميم الصفحات.
-const firebaseConfig = {
-  apiKey: "AIzaSyCV1h6VbZ2A7kjuEJ1D1sq6BbOns1wUSow",
-  authDomain: "momen-5a28a.firebaseapp.com",
-  databaseURL: "https://momen-5a28a-default-rtdb.firebaseio.com",
-  projectId: "momen-5a28a",
-  storageBucket: "momen-5a28a.firebasestorage.app",
-  messagingSenderId: "452258478588",
-  appId: "1:452258478588:web:b89266daa4171d87165a79",
-  measurementId: "G-63TR9FE4F7"
+import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+import {
+  getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc,
+  getDoc, getDocs, onSnapshot, query, where, orderBy, limit, serverTimestamp,
+  Timestamp, increment
+} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+
+export const DEFAULT_ADMIN_KEY = '0000';
+export const RESTAURANT_ID = 'r7_burger';
+
+export const firebaseConfig = {
+  apiKey: 'AIzaSyCnLAY7zQyBy7gUuL9wszt9aEhiJgvRmxI',
+  authDomain: 'shop-d52dc.firebaseapp.com',
+  databaseURL: 'https://shop-d52dc-default-rtdb.firebaseio.com',
+  projectId: 'shop-d52dc',
+  storageBucket: 'shop-d52dc.appspot.com',
+  messagingSenderId: '97580537866',
+  appId: '1:97580537866:web:abc46e5a2f527b6300a7f3',
+  measurementId: 'G-956RQMBP42'
 };
 
-(function(){
-  'use strict';
-  const APP_KEY='supermarket_pos_ar_v1';
-  const ROOT_PATH='pos_projects';
-  const DEFAULT_COMPANY='echo-store-cdgjhdvjt';
-  const LEGACY_COMPANY_KEYS=new Set(['SUPER-0001','OMAR-AD0BE-02']);
-  const DELETE_KEYS=['__deleted','_deletedIds'];
-  const META_KEYS=new Set(['lastSyncAt','lastLocalUpdate','lastCloudPull','__deleted','_deletedIds','_syncMeta']);
-  const ITEM_META=new Set(['_updatedAt','_createdAt','_deleted','deletedAt','_syncStamp']);
-  const state={snapshot:null,syncTimer:null,pullTimer:null,installTimer:null,applyingRemote:false,lastLocalSaveAt:0,lastUserEditAt:0,lastError:null,started:false,deferredRenderTimer:null};
+export const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+export const db = getFirestore(app);
 
-  function now(){return new Date().toISOString()}
-  function isObj(v){return !!v && typeof v==='object' && !Array.isArray(v)}
-  function clone(v){try{return JSON.parse(JSON.stringify(v||{}))}catch(e){return {}}}
-  function readLocal(){try{return JSON.parse(localStorage.getItem(APP_KEY)||'{}')||{}}catch(e){return {}}}
-  function writeLocal(db,opts={}){localStorage.setItem(APP_KEY,JSON.stringify(db||{})); if(opts.snapshot!==false) state.snapshot=clone(db||{});}
-  function clean(v){const s=String(v||DEFAULT_COMPANY).trim().replace(/[^a-zA-Z0-9_-]/g,'_'); return (!s||LEGACY_COMPANY_KEYS.has(s))?DEFAULT_COMPANY:s}
-  function currentCompanyKey(fallback){
-    const db=readLocal(); let key=fallback || db?.settings?.companyKey;
-    try{const u=JSON.parse(localStorage.getItem('currentUser')||'{}'); key=key || u.companyKey || u.managerKey;}catch(e){}
-    return clean(key || DEFAULT_COMPANY)
+export {
+  collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, getDocs,
+  onSnapshot, query, where, orderBy, limit, serverTimestamp, Timestamp, increment
+};
+
+export const col = (...path) => collection(db, 'restaurants', RESTAURANT_ID, ...path);
+export const refDoc = (...path) => doc(db, 'restaurants', RESTAURANT_ID, ...path);
+
+export const FALLBACK_SETTINGS = {
+  name: 'R7 Burger',
+  slogan: 'نظام المنيو الذكي',
+  currency: '₪',
+  whatsapp: '970590000000',
+  publicMenuUrl: '',
+  taxRate: 0,
+  serviceRate: 0,
+  acceptOrdersOutsideRestaurant: true
+};
+
+export const FALLBACK_CATEGORIES = [
+  { id: 'burgers', name: 'الوجبات الأساسية', sort: 1, active: true },
+  { id: 'drinks', name: 'المشروبات', sort: 2, active: true },
+  { id: 'sides', name: 'الإضافات', sort: 3, active: true }
+];
+
+export const FALLBACK_PRODUCTS = [
+  {
+    id: 'demo-burger', name: 'برجر كلاسيك', price: 20, categoryId: 'burgers', active: true, sort: 1,
+    description: 'لحم بقري مشوي مع جبنة وصوص خاص وخضار طازجة.',
+    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=900&h=700&fit=crop'
+  },
+  {
+    id: 'demo-crispy', name: 'وجبة كريسبي', price: 25, categoryId: 'burgers', active: true, sort: 2,
+    description: 'دجاج كريسبي مع بطاطا وصوص المطعم.',
+    image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=900&h=700&fit=crop'
+  },
+  {
+    id: 'demo-cola', name: 'كولا باردة', price: 5, categoryId: 'drinks', active: true, sort: 3,
+    description: 'مشروب غازي بارد.',
+    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=900&h=700&fit=crop'
   }
-  function url(companyKey){return `${firebaseConfig.databaseURL}/${ROOT_PATH}/${currentCompanyKey(companyKey)}.json`}
-  function safeToast(msg){try{if(window.toast) window.toast(msg)}catch(e){}}
-  function sameJSON(a,b){try{return JSON.stringify(a)===JSON.stringify(b)}catch(e){return false}}
-  function editableElement(el){
-    if(!el) return false;
-    const tag=String(el.tagName||'').toLowerCase();
-    return tag==='input'||tag==='textarea'||tag==='select'||el.isContentEditable||!!(el.closest&&el.closest('form,.modal,.dialog,[role=dialog]'));
+];
+
+function rawCode(err){
+  return String(err?.code || err?.message || err || '').toLowerCase();
+}
+
+export function firebaseErrorMessage(err){
+  const code = rawCode(err);
+  const msg = err?.message || String(err || '');
+  if(code.includes('auth/admin-restricted-operation') || code.includes('auth/operation-not-allowed')){
+    return 'تم حذف Firebase Auth من هذه النسخة. إذا ظهرت هذه الرسالة فأنت تفتح نسخة قديمة. استخدم الملفات الجديدة فقط.';
   }
-  function visible(el){
-    if(!el) return false;
-    const s=getComputedStyle(el);
-    return s.display!=='none' && s.visibility!=='hidden' && el.offsetParent!==null;
+  if(code.includes('permission-denied')){
+    return 'صلاحيات Firestore تمنع القراءة أو الكتابة. انسخ قواعد firestore.rules.txt الموجودة مع الملفات إلى Firebase Console ثم اضغط Publish.';
   }
-  function pageHasOpenEditor(){
-    try{
-      if(window.oskarForceNoRemoteRender) return true;
-      if(document.querySelector('.scanner[style*="flex"], #reader')) return true;
-      const modal=[...document.querySelectorAll('.modal-back,.modal,[role=dialog]')].some(m=>visible(m)&&m.querySelector('input,textarea,select,form'));
-      if(modal) return true;
-      const main=document.getElementById('mainCard');
-      if(main && main.querySelector('form,#crudForm,#accForm,#editInvoiceForm,#manualDebtForm,#payDebtForm')) return true;
-    }catch(e){}
-    return false;
+  if(code.includes('failed-precondition') && code.includes('index')){
+    return 'Firestore يحتاج Index لهذا الاستعلام. افتح رابط الخطأ من Console أو استخدم النسخة التي لا تعتمد على ترتيب مركب.';
   }
-  function markUserEditing(){state.lastUserEditAt=Date.now();}
-  function userIsEditing(){
-    try{if(typeof window.oskarIsUserEditing==='function' && window.oskarIsUserEditing()) return true;}catch(e){}
-    if(pageHasOpenEditor()) return true;
-    if(editableElement(document.activeElement)) return true;
-    return Date.now()-state.lastUserEditAt<30000;
-  }
-  function itemPublicCopy(x){const o={}; Object.keys(x||{}).sort().forEach(k=>{if(!ITEM_META.has(k))o[k]=x[k]}); return o}
-  function itemChanged(a,b){return !sameJSON(itemPublicCopy(a||{}), itemPublicCopy(b||{}))}
-  function stamp(x){return Date.parse(x?._updatedAt||x?.updatedAt||x?._createdAt||x?.createdAt||x?.deletedAt||x?.date||0)||0}
-  function settingsStamp(s){return Date.parse(s?._updatedAt||s?.updatedAt||0)||0}
-  function isCollectionKey(k,v){return Array.isArray(v) && !META_KEYS.has(k)}
-  function mergeMap(a,b){const out={...(isObj(a)?a:{})}; Object.keys(isObj(b)?b:{}).forEach(k=>{out[k]={...(out[k]||{}),...(b[k]||{})}}); return out}
-  function collectDeleted(){
-    const out={};
-    for(const db of arguments){
-      if(!isObj(db)) continue;
-      DELETE_KEYS.forEach(key=>{const src=db[key]; if(!isObj(src))return; Object.keys(src).forEach(coll=>{out[coll]=out[coll]||{}; Object.assign(out[coll],src[coll]||{})})});
-      Object.keys(db).forEach(coll=>{const arr=db[coll]; if(!Array.isArray(arr))return; arr.forEach(x=>{if(x&&x.id&&(x._deleted||x.deletedAt)){out[coll]=out[coll]||{}; out[coll][x.id]=x.deletedAt||x._updatedAt||now();}})});
-    }
-    return out;
-  }
-  function ensureDeleted(db){db.__deleted=mergeMap(db.__deleted,{}); db._deletedIds=mergeMap(db._deletedIds,{}); return db}
-  function removeDeletedFromArrays(db){
-    db=isObj(db)?db:{}; const del=collectDeleted(db);
-    Object.keys(db).forEach(k=>{if(Array.isArray(db[k])){const d=del[k]||{}; db[k]=db[k].filter(x=>!(x&&x.id&&(d[x.id]||x._deleted||x.deletedAt)));}});
-    db.__deleted=mergeMap(db.__deleted,del); db._deletedIds=mergeMap(db._deletedIds,del);
-    return db;
-  }
-  function chooseItem(localItem,cloudItem,prefer){
-    if(!localItem) return clone(cloudItem);
-    if(!cloudItem) return clone(localItem);
-    const ls=stamp(localItem), cs=stamp(cloudItem);
-    if(ls>cs) return {...cloudItem,...localItem};
-    if(cs>ls) return {...localItem,...cloudItem};
-    return prefer==='cloud' ? {...localItem,...cloudItem} : {...cloudItem,...localItem};
-  }
-  function mergeArrays(localArr=[],cloudArr=[],coll='',deleted={},prefer='local'){
-    const byId=new Map(), noId=[]; const del=deleted[coll]||{};
-    function add(x,source){
-      if(!x||typeof x!=='object') return;
-      if(x.id){
-        if(del[x.id]||x._deleted||x.deletedAt) return;
-        const prev=byId.get(x.id);
-        if(!prev) byId.set(x.id,{item:clone(x),source});
-        else byId.set(x.id,{item:chooseItem(source==='local'?x:prev.item, source==='cloud'?x:prev.item, prefer),source:'merged'});
-      }else{
-        const key=JSON.stringify(x);
-        if(!noId.some(y=>JSON.stringify(y)===key)) noId.push(clone(x));
-      }
-    }
-    (cloudArr||[]).forEach(x=>add(x,'cloud'));
-    (localArr||[]).forEach(x=>add(x,'local'));
-    return [...byId.values()].map(v=>v.item).concat(noId);
-  }
-  function mergeSettings(local={},cloud={},prefer='local'){
-    local=isObj(local)?local:{}; cloud=isObj(cloud)?cloud:{};
-    const ls=settingsStamp(local), cs=settingsStamp(cloud);
-    let out;
-    if(ls && cs && cs>ls) out={...local,...cloud};
-    else if(ls && cs && ls>cs) out={...cloud,...local};
-    else out=prefer==='cloud'?{...local,...cloud}:{...cloud,...local};
-    if(local.managerPassword && local.managerPassword!=='0000000000@@' && (!cloud.managerPassword || cloud.managerPassword==='0000000000@@')){
-      out.managerPassword=local.managerPassword; out.forcePasswordChange=false;
-    }
-    out.companyKey=out.companyKey || local.companyKey || cloud.companyKey || DEFAULT_COMPANY;
-    if(!out.managerPassword) out.managerPassword='0000000000@@';
-    if(out.managerPassword==='0000000000@@') out.forcePasswordChange=true;
-    return out;
-  }
-  function mergeDB(local={},cloud={},opts={}){
-    const prefer=opts.prefer||'local'; local=isObj(local)?local:{}; cloud=isObj(cloud)?cloud:{};
-    const deleted=collectDeleted(local,cloud);
-    const out={...cloud,...local};
-    const keys=new Set([...Object.keys(cloud),...Object.keys(local)]);
-    keys.forEach(k=>{if(isCollectionKey(k,local[k])||isCollectionKey(k,cloud[k])) out[k]=mergeArrays(local[k]||[],cloud[k]||[],k,deleted,prefer)});
-    out.settings=mergeSettings(local.settings,cloud.settings,prefer);
-    out.__deleted=mergeMap(cloud.__deleted,local.__deleted); out.__deleted=mergeMap(out.__deleted,deleted);
-    out._deletedIds=mergeMap(cloud._deletedIds,local._deletedIds); out._deletedIds=mergeMap(out._deletedIds,deleted);
-    return removeDeletedFromArrays(out);
-  }
-  function normalizeDB(db){
-    db=isObj(db)?db:{}; db.settings=db.settings||{}; db.settings.companyKey=db.settings.companyKey||currentCompanyKey();
-    ensureDeleted(db); return removeDeletedFromArrays(db);
-  }
-  function markLocalChanges(db){
-    db=normalizeDB(db||{}); const base=state.snapshot||readLocal(); const t=now(); let changed=false;
-    Object.keys(db).forEach(coll=>{
-      if(!Array.isArray(db[coll])||META_KEYS.has(coll)) return;
-      const before=Array.isArray(base[coll])?base[coll]:[];
-      const beforeMap=new Map(before.filter(x=>x&&x.id).map(x=>[String(x.id),x]));
-      const afterIds=new Set();
-      db[coll].forEach(x=>{
-        if(!x||typeof x!=='object'||!x.id) return;
-        afterIds.add(String(x.id));
-        const old=beforeMap.get(String(x.id));
-        if(!old){x._createdAt=x._createdAt||t; x._updatedAt=t; changed=true;}
-        else if(itemChanged(old,x)){x._updatedAt=t; changed=true;}
-      });
-      beforeMap.forEach((old,id)=>{
-        if(!afterIds.has(id) && old && !old._deleted && !old.deletedAt){
-          db.__deleted[coll]=db.__deleted[coll]||{}; db._deletedIds[coll]=db._deletedIds[coll]||{};
-          db.__deleted[coll][id]=t; db._deletedIds[coll][id]=t; changed=true;
-        }
-      });
+  if(code.includes('unavailable')) return 'تعذر الاتصال بـ Firebase حالياً. تحقق من الإنترنت ومن حالة مشروع Firebase.';
+  if(code.includes('failed to fetch') || code.includes('network')) return 'فشل الاتصال بـ Firebase. شغّل الملفات من استضافة أو سيرفر محلي وليس من file://، وتحقق من الإنترنت.';
+  if(code.includes('quota')) return 'تم تجاوز حصة Firebase المجانية أو توجد قيود على المشروع.';
+  return msg || 'حدث خطأ غير معروف في Firebase.';
+}
+
+export function money(value, currency = '₪'){
+  const n = Number(value || 0);
+  return `${n.toFixed(Number.isInteger(n) ? 0 : 2)} ${currency}`;
+}
+
+export function orderNo(){
+  const d = new Date();
+  const stamp = `${String(d.getFullYear()).slice(2)}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+  return `R7-${stamp}-${Math.floor(1000 + Math.random()*9000)}`;
+}
+
+export function localNow(){
+  return new Date().toLocaleString('ar', { hour12: false });
+}
+
+export function toMillis(value){
+  if(!value) return null;
+  if(typeof value === 'number') return value;
+  if(value.toMillis) return value.toMillis();
+  if(value.seconds) return value.seconds * 1000;
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
+export async function sha256(text){
+  const data = new TextEncoder().encode(String(text));
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+export function makeKey(length = 10){
+  const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+  let out = '';
+  const buf = new Uint32Array(length);
+  crypto.getRandomValues(buf);
+  for(let i = 0; i < length; i++) out += chars[buf[i] % chars.length];
+  return out;
+}
+
+export function sessionGet(){
+  try { return JSON.parse(localStorage.getItem('r7_admin_session') || 'null'); }
+  catch { return null; }
+}
+
+export function sessionIsValid(){
+  const session = sessionGet();
+  if(!session) return false;
+  if(!session.expiresAt) return true;
+  return Date.now() < Number(session.expiresAt);
+}
+
+export function sessionSave(data){
+  localStorage.setItem('r7_admin_session', JSON.stringify(data));
+  return data;
+}
+
+export function logout(){
+  localStorage.removeItem('r7_admin_session');
+  location.href = 'login.html';
+}
+
+export function requireAdmin(){
+  if(sessionIsValid()) return true;
+  const next = encodeURIComponent(location.pathname.split('/').pop() + location.search);
+  location.href = `login.html?next=${next}`;
+  return false;
+}
+
+export async function validateAdminKey(rawKey){
+  const key = String(rawKey || '').trim();
+  if(!key) throw new Error('أدخل مفتاح الدخول');
+
+  // إصلاح مباشر لمشكلتك: المفتاح الافتراضي يعمل بدون Firebase Auth وبدون أي سجل مسبق.
+  if(key === DEFAULT_ADMIN_KEY){
+    return sessionSave({
+      keyId: 'bootstrap-0000',
+      label: 'دخول افتراضي 0000 - أنشئ مفتاحاً جديداً ثم غيّره',
+      loggedAt: Date.now(),
+      expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+      bootstrap: true
     });
-    if(!sameJSON((base&&base.settings)||{},db.settings||{})) { db.settings._updatedAt=t; changed=true; }
-    if(changed){db.lastLocalUpdate=t; state.lastLocalSaveAt=Date.now();}
-    return db;
-  }
-  async function requestJSON(method,data,companyKey){
-    const options={method,cache:'no-store',headers:{'Content-Type':'application/json','Cache-Control':'no-cache','Pragma':'no-cache'}};
-    if(data!==undefined) options.body=JSON.stringify(data||{});
-    const r=await fetch(url(companyKey),options);
-    if(!r.ok){let body=''; try{body=await r.text()}catch(e){} const err=new Error('تعذر الاتصال بفايربيز: '+r.status+' '+body.slice(0,120)); err.status=r.status; throw err;}
-    try{return await r.json()}catch(e){return {}}
-  }
-  async function getCloud(companyKey){return await requestJSON('GET',undefined,companyKey)||{}}
-  async function putCloud(db,companyKey){return await requestJSON('PUT',normalizeDB(db||{}),companyKey)}
-  async function patchPath(path,data,companyKey){
-    const cleanPath=String(path||'').replace(/^\/+|\/+$/g,'');
-    const options={method:'PATCH',cache:'no-store',headers:{'Content-Type':'application/json','Cache-Control':'no-cache','Pragma':'no-cache'},body:JSON.stringify(data||{})};
-    const r=await fetch(`${firebaseConfig.databaseURL}/${ROOT_PATH}/${currentCompanyKey(companyKey)}/${cleanPath}.json`,options);
-    if(!r.ok){let body='';try{body=await r.text()}catch(e){}throw new Error('تعذر تحديث فايربيز: '+r.status+' '+body.slice(0,120));}
-    try{return await r.json()}catch(e){return {}}
-  }
-  async function updateManagerPassword(password,companyKey){
-    const pass=String(password||'').trim();
-    if(!pass || pass==='0000000000@@' || pass.length<6) throw new Error('كلمة المرور الجديدة غير صالحة');
-    const t=now();
-    const db=normalizeDB(readLocal());
-    db.settings=db.settings||{};
-    db.settings.managerPassword=pass;
-    db.settings.forcePasswordChange=false;
-    db.settings._updatedAt=t;
-    db.lastLocalUpdate=t;
-    writeLocal(db);
-    if(navigator.onLine){
-      await patchPath('settings',{managerPassword:pass,forcePasswordChange:false,_updatedAt:t,companyKey:db.settings.companyKey||currentCompanyKey(companyKey)},companyKey||db.settings.companyKey);
-      try{await syncCore(db,{companyKey:companyKey||db.settings.companyKey,rawLocal:true,prefer:'local'});}catch(e){console.warn(e)}
-    }
-    return db;
-  }
-  async function syncCore(localDB,opts={}){
-    const companyKey=opts.companyKey || localDB?.settings?.companyKey || currentCompanyKey();
-    let local=opts.rawLocal?normalizeDB(localDB||readLocal()):markLocalChanges(localDB||readLocal());
-    const cloud=await getCloud(companyKey).catch(e=>{state.lastError=e; throw e});
-    const merged=mergeDB(local,cloud,{prefer:opts.prefer||'local'});
-    merged.lastSyncAt=now(); merged.lastLocalUpdate=merged.lastLocalUpdate||local.lastLocalUpdate||now();
-    await putCloud(merged,companyKey).catch(e=>{state.lastError=e; throw e});
-    writeLocal(merged); state.lastError=null; return merged;
-  }
-  function shouldAutoSync(){
-    if(!navigator.onLine) return false;
-    try{const u=JSON.parse(localStorage.getItem('currentUser')||'null'); if(u&&u.companyKey) return true;}catch(e){}
-    return !/index\.html$/i.test(location.pathname) && !location.pathname.endsWith('/');
-  }
-  function queueSync(db){
-    if(!shouldAutoSync()||state.applyingRemote) return;
-    clearTimeout(state.syncTimer);
-    state.syncTimer=setTimeout(async()=>{try{await syncCore(db||readLocal(),{prefer:'local'});}catch(e){console.warn(e);}},900);
-  }
-  async function pullMerge(companyKey,render=true){
-    if(!navigator.onLine) return false;
-    if(userIsEditing()) return false;
-    if(Date.now()-state.lastLocalSaveAt<600) return false;
-    const before=readLocal();
-    const cloud=await getCloud(companyKey||before?.settings?.companyKey).catch(e=>{state.lastError=e; return null});
-    if(!cloud || !Object.keys(cloud).length) return false;
-    if(userIsEditing()) return false;
-    const merged=mergeDB(before,cloud,{prefer:'cloud'}); merged.lastCloudPull=now();
-    const changed=!sameJSON(before,merged);
-    if(changed){
-      state.applyingRemote=true;
-      writeLocal(merged);
-      try{window.DB=clone(merged);}catch(e){}
-      state.applyingRemote=false;
-      if(render) refreshPageFromDB();
-    }
-    return changed;
-  }
-  function refreshPageFromDB(){
-    if(userIsEditing()){
-      clearTimeout(state.deferredRenderTimer);
-      state.deferredRenderTimer=setTimeout(()=>{if(!userIsEditing()) refreshPageFromDB();},1000);
-      return;
-    }
-    try{window.dispatchEvent(new CustomEvent('oskar-db-updated',{detail:{source:'cloud'}}));}catch(e){}
-    try{if(typeof window.loadDB==='function') window.DB=window.loadDB();}catch(e){}
-    try{if(typeof window.renderPage==='function' && document.readyState!=='loading') window.renderPage();}catch(e){console.warn(e)}
   }
 
-  window.FirebaseBridge={
-    config:firebaseConfig, root:currentCompanyKey, lastError:()=>state.lastError,
-    async pullWithKey(companyKey){
-      const local=readLocal(); const cloud=await getCloud(companyKey);
-      if(!cloud || !Object.keys(cloud).length){state.snapshot=clone(local); return local;}
-      const merged=mergeDB(local,cloud,{prefer:'cloud'}); merged.lastCloudPull=now(); writeLocal(merged); return merged;
-    },
-    async pushWithKey(companyKey){
-      const local=markLocalChanges(readLocal());
-      let cloud={}; try{cloud=await getCloud(companyKey||local?.settings?.companyKey)}catch(e){cloud={}};
-      const merged=mergeDB(local,cloud,{prefer:'local'}); merged.lastSyncAt=now();
-      await putCloud(merged,companyKey||merged?.settings?.companyKey); writeLocal(merged); return merged;
-    },
-    async sync(localDB,opts={}){if(!navigator.onLine) return normalizeDB(localDB||readLocal()); return await syncCore(localDB||readLocal(),{...opts,prefer:opts.prefer||'local'});},
-    async pull(){return await this.pullWithKey(readLocal()?.settings?.companyKey)},
-    async push(){return await this.pushWithKey(readLocal()?.settings?.companyKey)},
-    async livePull(){return await pullMerge(readLocal()?.settings?.companyKey,true)},
-    async updateManagerPassword(password,companyKey){return await updateManagerPassword(password,companyKey||readLocal()?.settings?.companyKey)},
-    queueSync
-  };
+  const hash = await sha256(key);
+  const snap = await getDocs(query(col('accessKeys'), where('hash', '==', hash), limit(1)));
+  if(snap.empty) throw new Error('مفتاح الدخول غير صحيح');
 
-  function installPageHooks(){
-    if(typeof window.saveDB==='function' && !window.saveDB.__oskarSyncFixed){
-      window.saveDB=function(db){
-        try{db=markLocalChanges(db||window.DB||readLocal()); writeLocal(db); window.DB=db; queueSync(db); return db;}
-        catch(e){console.warn(e); localStorage.setItem(APP_KEY,JSON.stringify(db||{})); return db;}
-      };
-      window.saveDB.__oskarSyncFixed=true;
-    }
-    if(typeof window.persist==='function' && !window.persist.__oskarSyncFixed){
-      window.persist=function(){
-        const db=window.DB||readLocal();
-        if(typeof window.saveDB==='function') window.saveDB(db); else {const d=markLocalChanges(db); writeLocal(d); queueSync(d);}
-        try{if(typeof window.updateSyncState==='function') window.updateSyncState();}catch(e){}
-      };
-      window.persist.__oskarSyncFixed=true;
-    }
-    if(typeof window.syncNow==='function' && !window.syncNow.__oskarSyncFixed){
-      window.syncNow=async function(show=true){
-        try{
-          if(!navigator.onLine){if(show) safeToast('لا يوجد اتصال'); return;}
-          const merged=await window.FirebaseBridge.sync(window.DB||readLocal(),{prefer:'local'});
-          window.DB=clone(merged); state.snapshot=clone(merged);
-          if(show) safeToast('تمت المزامنة');
-          try{if(typeof window.renderPage==='function') window.renderPage();}catch(e){}
-        }catch(e){console.warn(e); if(show) safeToast('تعذر المزامنة، تأكد من صلاحيات Realtime Database');}
-      };
-      window.syncNow.__oskarSyncFixed=true;
-    }
-    if(!state.started && typeof window.renderPage==='function'){
-      state.started=true;
-      startLivePull();
+  let match = null;
+  snap.forEach(d => { if(!match) match = { id: d.id, ref: d.ref, data: d.data() }; });
+  const data = match.data || {};
+  if(data.active === false) throw new Error('هذا المفتاح معطل من الإعدادات');
+  const expiresAt = toMillis(data.expiresAt);
+  if(expiresAt && Date.now() > expiresAt) throw new Error('انتهت صلاحية هذا المفتاح');
+  if(data.maxUses && Number(data.useCount || 0) >= Number(data.maxUses)) throw new Error('تم استهلاك عدد مرات استخدام هذا المفتاح');
+
+  await updateDoc(match.ref, { lastLoginAt: serverTimestamp(), useCount: increment(1) });
+  return sessionSave({ keyId: match.id, label: data.label || 'Admin', loggedAt: Date.now(), expiresAt: expiresAt || null, bootstrap: false });
+}
+
+export async function ensureSeedData({ createDefaultKey = false } = {}){
+  await setDoc(refDoc('settings', 'main'), {
+    ...FALLBACK_SETTINGS,
+    updatedAt: serverTimestamp()
+  }, { merge: true });
+
+  const cats = await getDocs(col('categories'));
+  if(cats.empty){
+    for(const c of FALLBACK_CATEGORIES){
+      const { id, ...data } = c;
+      await setDoc(refDoc('categories', id), { ...data, createdAt: serverTimestamp() }, { merge: true });
     }
   }
-  function startLivePull(){
-    clearInterval(state.pullTimer);
-    state.pullTimer=setInterval(()=>{if(shouldAutoSync()) pullMerge(readLocal()?.settings?.companyKey,true).catch(e=>console.warn(e));},1000);
-    window.addEventListener('focus',()=>{if(shouldAutoSync()&&!userIsEditing()) pullMerge(readLocal()?.settings?.companyKey,true).catch(()=>{})});
-    window.addEventListener('online',()=>{queueSync(readLocal()); if(!userIsEditing()) pullMerge(readLocal()?.settings?.companyKey,true).catch(()=>{})});
-  }
-  document.addEventListener('input',markUserEditing,true);
-  document.addEventListener('change',markUserEditing,true);
-  document.addEventListener('focusin',e=>{if(editableElement(e.target)) markUserEditing();},true);
-  document.addEventListener('keydown',e=>{if(editableElement(e.target)) markUserEditing();},true);
-  state.snapshot=clone(readLocal());
-  [0,80,250,600,1200,2500].forEach(ms=>setTimeout(installPageHooks,ms));
-  document.addEventListener('DOMContentLoaded',()=>{installPageHooks(); setTimeout(installPageHooks,500);});
-})();
 
-/* ===== OSKAR MOBILE SIDEBAR FIX - 2026-05-08 ===== */
-(function(){
-  if(window.__OSKAR_MOBILE_SIDEBAR_FIX__) return;
-  window.__OSKAR_MOBILE_SIDEBAR_FIX__ = true;
-  const css = `
-    @media (max-width:1099.98px){
-      html body .drawer:not(.open){transform:translateX(105%) translateZ(0) !important;visibility:visible !important;}
-      html body .drawer.open{transform:translateX(0) translateZ(0) !important;visibility:visible !important;}
-      html body .drawer-overlay:not(.show){display:none !important;}
-      html body .drawer-overlay.show{display:block !important;}
+  const prods = await getDocs(col('products'));
+  if(prods.empty){
+    for(const p of FALLBACK_PRODUCTS){
+      const { id, ...data } = p;
+      await setDoc(refDoc('products', id), { ...data, createdAt: serverTimestamp() }, { merge: true });
     }
-    @media (min-width:1100px){
-      html body .drawer{transform:none !important;right:0 !important;top:48px !important;width:280px !important;height:calc(100vh - 48px) !important;}
-      html body .drawer-overlay{display:none !important;}
-      html body .page{margin-right:280px !important;}
-      html body .fab, html body .topbar .menu-open{display:none !important;}
-    }`;
-  function installStyle(){if(document.getElementById('oskar-mobile-sidebar-fix-style')) return; const st=document.createElement('style'); st.id='oskar-mobile-sidebar-fix-style'; st.textContent=css; (document.head||document.documentElement).appendChild(st);}
-  installStyle();
-  const isMobile=()=>window.matchMedia&&window.matchMedia('(max-width:1099.98px)').matches;
-  function setHomeOpenOnly(){const drawer=document.getElementById('drawer')||document.querySelector('.drawer'); if(!drawer||!isMobile())return; drawer.querySelectorAll('.menu-group').forEach(group=>{const title=String(group.querySelector('.menu-head b')?.textContent||'').trim(); if(title==='الرئيسية') group.classList.add('open'); else group.classList.remove('open');});}
-  function closeMobileDrawerOnStart(){if(!isMobile())return; const drawer=document.getElementById('drawer')||document.querySelector('.drawer'); const overlay=document.getElementById('drawerOverlay')||document.querySelector('.drawer-overlay'); if(drawer)drawer.classList.remove('open'); if(overlay)overlay.classList.remove('show');}
-  function applyInitialMobileState(){installStyle(); closeMobileDrawerOnStart(); setHomeOpenOnly();}
-  function scheduleInitial(){[0,80,220,500,900].forEach(ms=>setTimeout(applyInitialMobileState,ms));}
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',scheduleInitial,{once:true}); else scheduleInitial();
-  window.addEventListener('resize',()=>{installStyle(); if(!isMobile()){const drawer=document.getElementById('drawer')||document.querySelector('.drawer'); const overlay=document.getElementById('drawerOverlay')||document.querySelector('.drawer-overlay'); if(drawer)drawer.classList.remove('open'); if(overlay)overlay.classList.remove('show');}});
-})();
+  }
+
+  if(createDefaultKey){
+    const keys = await getDocs(col('accessKeys'));
+    if(keys.empty){
+      await setDoc(refDoc('accessKeys', 'default-admin'), {
+        label: 'مفتاح افتراضي - 0000',
+        hash: await sha256(DEFAULT_ADMIN_KEY),
+        type: 'permanent',
+        active: true,
+        createdAt: serverTimestamp(),
+        expiresAt: null,
+        maxUses: null,
+        useCount: 0
+      }, { merge: true });
+    }
+  }
+}
+
+export function snapshotList(snap){
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export function currentMenuBaseUrl(settings = {}){
+  const saved = String(settings.publicMenuUrl || '').trim();
+  if(saved) return saved.replace(/\?$/, '');
+  const base = location.href.split('?')[0].replace(/[^/]+$/, 'index.html');
+  return base;
+}

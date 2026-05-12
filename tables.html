@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الطاولات و QR - R7 Burger</title>
+  <style>
+    :root{--brand:#ea580c;--brand2:#fb923c;--dark:#101827;--muted:#6b7280;--line:#eef0f4;--bg:#f6f7fb;--ok:#16a34a;--bad:#dc2626;--shadow:0 18px 45px rgba(15,23,42,.08)}
+    *{box-sizing:border-box} body{margin:0;background:#eef1f6;color:var(--dark);font-family:Tahoma,Arial,sans-serif} button,input{font:inherit} button{cursor:pointer;border:0}.app{max-width:980px;min-height:100vh;margin:auto;background:#f8fafc}.top{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);padding:14px;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{display:flex;align-items:center;gap:12px}.logo{width:52px;height:52px;border-radius:18px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px}h1{font-size:21px;margin:0;font-weight:900}.sub{font-size:12px;color:var(--muted);font-weight:800}.nav{display:flex;gap:8px;overflow:auto;padding:12px 14px;background:#fff;border-bottom:1px solid var(--line)}.nav a,.nav button{white-space:nowrap;text-decoration:none;background:#fff7ed;color:#9a3412;padding:11px 14px;border-radius:16px;font-weight:900}.wrap{padding:16px;display:grid;gap:16px}.card{background:#fff;border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:var(--shadow)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{width:100%;border:1px solid var(--line);background:#f8fafc;border-radius:17px;padding:13px;margin:7px 0 12px;outline:none}.primary{border-radius:17px;padding:13px 16px;background:var(--brand);color:#fff;font-weight:900;box-shadow:0 8px 20px rgba(234,88,12,.18)}.secondary{border-radius:17px;padding:13px 16px;background:#111827;color:#fff;font-weight:900}.danger{border-radius:14px;padding:10px 12px;background:#fee2e2;color:#991b1b;font-weight:900}.ghost{border-radius:14px;padding:10px 12px;background:#f3f4f6;color:#111827;font-weight:900}.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.tableCard{border:1px solid var(--line);border-radius:24px;background:#fff;padding:16px;display:grid;gap:12px}.qr{width:160px;height:160px;border-radius:18px;border:1px solid var(--line);padding:8px;background:#fff;margin:auto}.mono{direction:ltr;text-align:left;background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:10px;overflow:auto;font-family:monospace;font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap}.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:100;max-width:600px;width:calc(100% - 34px);padding:16px 18px;border-radius:20px;background:#111827;color:#fff;font-weight:900;display:none;box-shadow:0 15px 40px rgba(15,23,42,.22);line-height:1.7}.toast.show{display:block}.toast.err{background:#b91c1c}.toast.ok{background:#047857}.alert{padding:14px;border-radius:18px;margin-bottom:12px;font-weight:800;line-height:1.8;background:#fee2e2;color:#991b1b}.hidden{display:none}@media print{body{background:#fff}.top,.nav,.formCard,.actions,.toast,#firebaseError{display:none!important}.app{max-width:none;background:#fff}.list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.tableCard{break-inside:avoid;box-shadow:none}.mono{font-size:10px}}
+  </style>
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+  <div class="app">
+    <header class="top"><div class="brand"><div class="logo">R7</div><div><h1>الطاولات و QR</h1><div class="sub">كل طاولة لها رابط منيو مختلف</div></div></div><button id="logoutBtn" class="danger">خروج</button></header>
+    <nav class="nav"><a href="admin.html">الإدارة</a><a href="kitchen.html">المطبخ</a><a href="reports.html">التقارير</a><button id="printAll">طباعة الكل</button></nav>
+    <main class="wrap">
+      <div id="firebaseError" class="alert hidden"></div>
+      <section class="card formCard">
+        <h2>إضافة طاولة</h2>
+        <div class="grid"><input id="tableNo" class="field" placeholder="رقم الطاولة مثل 1"><input id="tableName" class="field" placeholder="اسم اختياري مثل: الطاولة الخارجية"></div>
+        <button id="addTable" class="primary">إضافة الطاولة</button>
+      </section>
+      <section class="card"><h2>قائمة الطاولات</h2><div id="tablesList" class="list"></div></section>
+    </main>
+  </div>
+  <script type="module">
+    import { requireAdmin, logout, col, refDoc, addDoc, setDoc, deleteDoc, getDoc, getDocs, onSnapshot, serverTimestamp, firebaseErrorMessage, snapshotList, currentMenuBaseUrl, FALLBACK_SETTINGS } from './firebase.js';
+    if(!requireAdmin()) throw new Error('not logged');
+    const $=id=>document.getElementById(id); const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    const toast=(m,t='')=>{const e=$('toast');e.textContent=m;e.className='toast show '+t;setTimeout(()=>e.className='toast',3500)};
+    const showErr=m=>{$('firebaseError').textContent=m;$('firebaseError').classList.remove('hidden')};
+    let settings={...FALLBACK_SETTINGS}, tables=[];
+    $('logoutBtn').onclick=logout; $('printAll').onclick=()=>print();
+    function tableUrl(no){ const base=currentMenuBaseUrl(settings); const sep=base.includes('?')?'&':'?'; return `${base}${sep}table=${encodeURIComponent(no)}`; }
+    function qrUrl(link){ return `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(link)}`; }
+    function render(){
+      tables.sort((a,b)=>Number(a.no||0)-Number(b.no||0));
+      $('tablesList').innerHTML=tables.map(t=>{const link=tableUrl(t.no);return `<div class="tableCard"><h3 style="margin:0;font-size:22px">طاولة ${esc(t.no)}</h3><div class="sub">${esc(t.name||'')}</div><img class="qr" src="${qrUrl(link)}"><div class="mono">${esc(link)}</div><div class="actions"><button class="ghost" data-copy="${esc(link)}">نسخ الرابط</button><button class="secondary" data-print="${esc(t.no)}">طباعة</button><button class="danger" data-del="${esc(t.id)}">حذف</button></div></div>`}).join('')||'<div class="sub">لا توجد طاولات بعد.</div>';
+      document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>navigator.clipboard.writeText(b.dataset.copy).then(()=>toast('تم نسخ الرابط','ok')));
+      document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(b.dataset.del));
+      document.querySelectorAll('[data-print]').forEach(b=>b.onclick=()=>printOne(b.dataset.print));
+    }
+    async function del(id){ if(confirm('حذف الطاولة؟')) await deleteDoc(refDoc('tables',id)); }
+    function printOne(no){ const t=tables.find(x=>String(x.no)===String(no)); if(!t)return; const link=tableUrl(t.no); const w=open('','_blank'); w.document.write(`<html dir="rtl"><head><title>طاولة ${esc(t.no)}</title><style>body{font-family:Tahoma;text-align:center;padding:20px}img{width:260px;height:260px}h1{font-size:32px}.link{direction:ltr;font-family:monospace;word-break:break-all}</style></head><body><h1>R7 Burger</h1><h2>طاولة ${esc(t.no)}</h2><p>امسح الكود لفتح المنيو</p><img src="${qrUrl(link)}"><div class="link">${esc(link)}</div><script>setTimeout(()=>print(),800)<\/script></body></html>`); w.document.close(); }
+    $('addTable').onclick=async()=>{ const no=$('tableNo').value.trim(); if(!no)return toast('اكتب رقم الطاولة','err'); try{ await addDoc(col('tables'),{no,name:$('tableName').value.trim(),active:true,createdAt:serverTimestamp()}); $('tableNo').value='';$('tableName').value='';toast('تمت إضافة الطاولة','ok')}catch(e){showErr(firebaseErrorMessage(e));toast(firebaseErrorMessage(e),'err')} };
+    try{ const s=await getDoc(refDoc('settings','main')); if(s.exists()) settings={...settings,...s.data()}; tables=snapshotList(await getDocs(col('tables'))); render(); onSnapshot(refDoc('settings','main'),snap=>{if(snap.exists()){settings={...settings,...snap.data()};render()}},e=>showErr(firebaseErrorMessage(e))); onSnapshot(col('tables'),snap=>{tables=snapshotList(snap);render()},e=>showErr(firebaseErrorMessage(e))); }catch(e){showErr(firebaseErrorMessage(e));}
+  </script>
+</body>
+</html>
