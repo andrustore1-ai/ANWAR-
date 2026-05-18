@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07111f">
-<title>تسجيل الدخول - أندرو ستور</title>
+<title>الديون - أندرو ستور</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
 :root{
@@ -39,14 +39,14 @@ a{color:inherit;text-decoration:none} button,input,select,textarea{font-family:i
 <a class="nav-link " href="suppliers.html" data-icon="truck"><span class="nav-ico"></span><span>التجار / الموردين</span></a>
 <a class="nav-link " href="customers.html" data-icon="users"><span class="nav-ico"></span><span>الزبائن</span></a>
 <a class="nav-link " href="banks.html" data-icon="bank"><span class="nav-ico"></span><span>البنوك والصناديق</span></a>
-<a class="nav-link " href="debts.html" data-icon="receipt"><span class="nav-ico"></span><span>الديون</span></a>
+<a class="nav-link active" href="debts.html" data-icon="receipt"><span class="nav-ico"></span><span>الديون</span></a>
 <a class="nav-link " href="reports.html" data-icon="chart"><span class="nav-ico"></span><span>التقارير</span></a>
 <a class="nav-link " href="settings.html" data-icon="settings"><span class="nav-ico"></span><span>الإعدادات</span></a></nav>
   </aside>
   <main class="main">
     <header class="topbar">
       <button id="menuBtn" class="icon-btn" data-icon="menu" title="القائمة"><span class="nav-ico"></span></button>
-      <div class="top-title"><h2>تسجيل الدخول</h2><span><span class="shop-name">أندرو ستور</span> / <span class="connection-label">متصل</span></span></div>
+      <div class="top-title"><h2>الديون</h2><span><span class="shop-name">أندرو ستور</span> / <span class="connection-label">متصل</span></span></div>
       <div class="top-actions">
         <span class="status-dot"></span>
         <button id="exportPageBtn" class="icon-btn export-page-btn" data-icon="print" title="تصدير الصفحة PDF"><span class="nav-ico"></span></button>
@@ -86,7 +86,7 @@ a{color:inherit;text-decoration:none} button,input,select,textarea{font-family:i
 </div>
 
 <script type="module">
-const PAGE = "login";
+const PAGE = "debts";
 
 const APP_VERSION = "1.0.5";
 const DB_PREFIX = "andro_store_pos_v1_";

@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // نسخة تشغيل مباشرة للمحل: لا تعتمد على Anonymous Auth.
+    // المسار المستخدم داخل التطبيق:
+    // artifacts/echo-store-cdgjhdvjt/public/data/{collection_cdgjhdvjt}/{docId}
+    match /artifacts/{appId}/public/data/{collection}/{docId} {
+      allow read, write: if true;
+    }
+
+    // السماح بقراءة/كتابة أي مستندات مساعدة داخل نفس المشروع أثناء الاختبار.
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

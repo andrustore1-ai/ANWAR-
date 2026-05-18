@@ -1,0 +1,11 @@
+{
+  "name": "Andro Store POS",
+  "short_name": "Andro POS",
+  "dir": "rtl",
+  "lang": "ar",
+  "display": "standalone",
+  "start_url": "./index.html",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "description": "نظام ويب لإدارة متجر جوالات ومبيعات وصيانة عبر Firebase مع عمل دون إنترنت."
+}
